@@ -4,7 +4,7 @@ A chrome extension that provides a favorites system similar to a normal browsers
 
 
 
-![Example](C:\Users\zacha\Git\universal_favorites\Example.PNG)
+![Example](.\Example.PNG)
 
 
 
