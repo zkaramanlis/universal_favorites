@@ -1,68 +1,42 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Universal Favorites
 
-## Available Scripts
+A chrome extension that provides a favorites system similar to a normal browsers, but independent of any particular browser implementation! Easily sync favorites between any browser that accepts chrome extensions (Firefox coming soon) in real time.
 
-In the project directory, you can run:
 
-### `npm start`
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+![Example](C:\Users\zacha\Git\universal_favorites\Example.PNG)
 
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
 
-### `npm test`
 
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Other universal bookmarking systems like pocket or Instapaper either have lackluster extensions that only allow you to add a bookmark, have experiences that are mainly tailored for articles instead of general bookmarks, or do not allow extensive folder structures and instead require "labels" that you have to search for.
 
-### `npm run build`
 
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
 
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
+This extension provides the same experience you are used to with you browsers bookmarks, and more!
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Features
 
-### `npm run eject`
+- **Unlimited Folder Structure**
+- **Synch Through Google Drive**
+- **Free**
+- **Searching**
+- **Instantly grabs website favicons**
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
 
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+## FAQ
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+- **Why google drive?** - cloud storage services was chosen as the medium to sync for 3 main reasons
 
-## Learn More
+  1. <u>To Keep It Free</u>: maintaining a server to synch the browsers would mean I would have to come up with some way monetize the extension to keep up with the costs. Not only is it much harder to monetize an extension, this just isn't something I want to charge people for
+  2. <u>Security and Controllability</u>: While the file is still in the cloud, drive is still a secure medium to store it that keeps it away from prying eyes while still keeping it under your control. Want to delete your favorites? just delete the file.
+  3. <u>It's what I use</u>: This was built because it is something I though I could use, and thus something I thought others might be able to use as well. If this becomes popular enough I might consider expanding it to other cloud storage mediums.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+- **How does it work?** - go to the settings menu and click on 'authorize access'. Once you go through Google's menu's you should get a code. Put this in the extension and click submit. If the file already exists in you favorites it will load them. Otherwise it will create a new file from you existing extensions
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+  Click on the plus sign to add a favorite, and right click on a link or folder to add or delete.
 
-### Code Splitting
+- **What about firefox and edge?** - Edge will soon become chromium based and will support chrome extensions. Firefox is in the works.
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
+- **What will you touch in my drive, and how much space will you use?** - The extension will create and update a file called 'FavoritesBar_SyncFile.json'. The access I requested only allows the extension to touch files created by me, so I couldn't do anything even if I wanted to. The file is very small, and will add virtually nothing to your storage space. A few KBs at most.
 
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
