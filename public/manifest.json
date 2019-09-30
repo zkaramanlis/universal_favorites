@@ -1,25 +1,26 @@
+
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
-  "icons": [
-    {
-      "src": "favicon.ico",
-      "sizes": "64x64 32x32 24x24 16x16",
-      "type": "image/x-icon"
-    },
-    {
-      "src": "logo192.png",
-      "type": "image/png",
-      "sizes": "192x192"
-    },
-    {
-      "src": "logo512.png",
-      "type": "image/png",
-      "sizes": "512x512"
-    }
+  "manifest_version": 2,
+  "name": "Favorites Bar",
+  "author": "Zachary Karamanlis",
+  "version": "1.0",
+  "description": "Favorites bar that sync to a file",
+  "browser_action": {
+    "default_popup": "index.html"
+  },
+  "permissions": [
+    "storage",
+    "https://www.googleapis.com/auth/drive.file",
+    "tabs"
   ],
-  "start_url": ".",
-  "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "background": {
+    "scripts": ["background.js"],
+    "persistant":false
+  },
+  "oauth2": {
+    "client_id": "560940426128-giooumtobj8eapjg89o8q5r718c4hb2s.apps.googleusercontent.com",
+    "scopes": [
+      "https://www.googleapis.com/auth/drive.file"
+    ]
+  }
 }

@@ -1,0 +1,25 @@
+#buttonRow{
+	display: flex;
+	flex-direction: row;
+}
+.menuButton{
+	width: 35px;
+	background-color: white;
+	border: none;
+	border-bottom: 1px solid gray;
+	cursor: pointer;
+	padding-top: 5px;
+}
+.menuButton:hover{
+	background-color: lightgray;
+}
+.menuButton:disabled{
+	cursor: default;
+	background-color: white;
+}
+#backButton{
+	width: 80px;
+}
+#onlyBack{
+	width: 150px;
+}
