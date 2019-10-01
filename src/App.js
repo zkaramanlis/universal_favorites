@@ -54,14 +54,12 @@ class App extends React.Component {
             }
 
             if(this.accessToken && result.fileId && result.date) {
-                let axiosWithAuth = axios.create({headers:{
-                    Authorization:"Bearer " + this.accessToken
-                }});
+                axios.defaults.headers.common["Authorization"] = "Bearer " + this.accessToken;
     
-                getLastChanged(axiosWithAuth, result.fileId)
+                getLastChanged(result.fileId)
                     .then(date => {
                         if(date !== result.date) {
-                            getFile(axiosWithAuth, result.fileId)
+                            getFile(result.fileId)
                                 .then(file => {
                                     this.links = file;
 
@@ -204,23 +202,21 @@ class App extends React.Component {
         chrome.storage.local.set({accessToken:accessToken, refreshToken:refreshToken});
         this.accessToken = accessToken;
 
-        let axiosWithAuth = axios.create({headers:{
-            Authorization:"Bearer " + accessToken
-        }});
+        axios.defaults.headers.common["Authorization"] = "Bearer " + accessToken;
 
-        let id = await checkForFile(axiosWithAuth);
+        let id = await checkForFile();
         if(id) {
-            let file = await getFile(axiosWithAuth, id);
+            let file = await getFile(id);
 
             this.links = file;
 
-            let date = await getLastChanged(axiosWithAuth, id);
+            let date = await getLastChanged(id);
 
             chrome.storage.local.set({fileId:id, links:this.links, date:date, settingsMenu:false});
             this.setState({currentLinks:this.links.data, settingsMenu:false});
         }
         else{
-            let res = await uploadFile(axiosWithAuth, this.links);
+            let res = await uploadFile(this.links);
 
             chrome.storage.local.set({fileId:res.id, links:this.links, date:res.modifiedTime, settingsMenu:false});
             this.setState({settingsMenu:false});
