@@ -6,7 +6,7 @@ import PropTypes from "prop-types";
 class LinkColumn extends React.Component {
     render() {
         return (
-            <Droppable droppableId="LinkColumn">
+            <Droppable droppableId="LinkColumn" isCombineEnabled>
                 {(provided) =>
                     <div ref={provided.innerRef} {...provided.droppableProps}>
                         <input type="text" id="searchBar" placeholder="Search" onChange={this.search} value={this.props.searchString} />
@@ -31,7 +31,7 @@ class LinkColumn extends React.Component {
             this.props.links.map((item, id) => (
                 <ContextMenuTrigger linkId={id} key={id} id="ContextMenu" collect={this.collect}>
                     <Draggable draggableId={id.toString()} index={id} key={id}>
-                        {(provided) => (
+                        {(provided, snapshot) => (
                             <div 
                                 key={id} 
                                 className="menu-item" 
@@ -39,6 +39,10 @@ class LinkColumn extends React.Component {
                                 {...provided.draggableProps}
                                 {...provided.dragHandleProps}
                                 ref={provided.innerRef}
+                                style={{
+                                    backgroundColor:snapshot.combineTargetFor ? "lightgray" : null,
+                                    ...provided.draggableProps.style,
+                                }}
                             >
                                 {this.getContent(item, id)}
                             </div>

@@ -13,6 +13,9 @@
     "https://www.googleapis.com/auth/drive.file",
     "tabs"
   ],
+  "icons": {
+   "128": "icon.png"
+  },
   "background": {
     "scripts": ["background.js"],
     "persistant":false

@@ -45,16 +45,13 @@ class App extends React.Component {
         chrome.storage.local.get(["settingsMenu", "accessToken", "links", "fileId", "date"], (result) => {
             this.setState({settingsMenu:result.settingsMenu});
 
-            if(result.accessToken) {
-                this.accessToken = result.accessToken;
-            }
             if(result.links) {
                 this.links = result.links;
                 this.setState({currentLinks:result.links.data});
             }
 
-            if(this.accessToken && result.fileId && result.date) {
-                axios.defaults.headers.common["Authorization"] = "Bearer " + this.accessToken;
+            if(result.accessToken && result.fileId && result.date) {
+                axios.defaults.headers.common["Authorization"] = "Bearer " + result.accessToken;
     
                 getLastChanged(result.fileId)
                     .then(date => {
@@ -92,11 +89,13 @@ class App extends React.Component {
                             settingsDisabled={this.state.settingsDisabled} settings={this.openSettings} 
                             addDisabled={this.state.addDisabled} add={this.openAddMenu}/>
 
-                        <LinkColumn searchString={this.state.searchString} openFolder={this.openFolder} links={this.state.currentLinks} search={this.search} />
+                        <LinkColumn searchString={this.state.searchString} openFolder={this.openFolder} 
+                            links={this.state.currentLinks} search={this.search} />
                     </div>
                 </DragDropContext>
                 <ContextMenu id="ContextMenu">
                     <MenuItem onClick={this.edit}>Edit</MenuItem>
+                    <MenuItem onClick={this.moveUp} disabled={this.state.backDisabled}>Move Up</MenuItem>
                     <MenuItem onClick={this.delete}>Delete</MenuItem>
                 </ContextMenu>
             </div>
@@ -137,6 +136,37 @@ class App extends React.Component {
         this.setState({currentLinks:results, backDisabled:false, addDisabled:true, searchString:searchString});
     }
 
+    moveUp = (e, data) => {
+
+        let linkId = data.linkId;
+
+        let currentLinksItem = this.state.currentLinks[this.linkId];
+        if(currentLinksItem.history) {
+            this.history = currentLinksItem.history;
+            this.linkId = this.history.pop();
+        }
+
+        let list = this.links;
+        let parentList = this.links;
+        this.history.forEach(id => {
+            parentList = list;
+            list = list.data[id];
+        });
+
+        let link = list.data[linkId];
+        list.data.splice(linkId, 1);
+        parentList.data.push(link);
+
+        this.history.pop();
+        let backDisabled = this.state.backDisabled;
+        if(parentList.type === "home") {
+            backDisabled = true;
+        }
+
+        chrome.storage.local.set({linksChanged:true, links:this.links});
+        this.setState({currentLinks:parentList.data.slice(), searchString:"", backDisabled:backDisabled, addDisabled:false});
+    }
+
     edit = (e, data) => {
 
         this.linkId = data.linkId;
@@ -157,17 +187,18 @@ class App extends React.Component {
             backDisabled = true;
         }
 
-        this.setState({editLink:list.data[this.linkId], editMenu:true, searchString:"", backDisabled:backDisabled, addDisabled:false});
+        this.setState({editLink:list.data[this.linkId], editMenu:true, searchString:"", 
+            backDisabled:backDisabled, addDisabled:false});
     }
 
     delete = (e, data) => {
 
-        this.linkId = data.linkId;
+        let linkId = data.linkId;
 
-        let currentLinksItem = this.state.currentLinks[this.linkId];
+        let currentLinksItem = this.state.currentLinks[linkId];
         if(currentLinksItem.history) {
             this.history = currentLinksItem.history;
-            this.linkId = this.history.pop();
+            linkId = this.history.pop();
         }
 
         let list = this.links;
@@ -175,7 +206,7 @@ class App extends React.Component {
             list = list.data[id];
         });
 
-        list.data.splice(this.linkId, 1);
+        list.data.splice(linkId, 1);
 
         let backDisabled = this.state.backDisabled;
         if(this.history === []) {
@@ -200,7 +231,6 @@ class App extends React.Component {
 
     sync = async (accessToken, refreshToken) => {
         chrome.storage.local.set({accessToken:accessToken, refreshToken:refreshToken});
-        this.accessToken = accessToken;
 
         axios.defaults.headers.common["Authorization"] = "Bearer " + accessToken;
 
@@ -266,25 +296,35 @@ class App extends React.Component {
     }
 
     onDragEnd =(result)=> {
-        if(!result.destination){
-            return;
-        }
-
         let list = this.links;
         this.history.forEach(id => {
             list = list.data[id];
         });
 
-        let newLinksList = this.state.currentLinks.slice();
-        let link = newLinksList[result.source.index];
+        let source = list.data[result.source.index];
 
-        newLinksList.splice(result.source.index, 1);
-        newLinksList.splice(result.destination.index, 0, link);
+        if(result.destination) {
+            list.data.splice(result.source.index, 1);
+            list.data.splice(result.destination.index, 0, source);
 
-        list.data = newLinksList;
+            chrome.storage.local.set({linksChanged:true, links:this.links});
+            this.setState({currentLinks:list.data.slice()});
+        }
+        if (result.combine) {
+            let destIndex = Number(result.combine.draggableId);
 
-        chrome.storage.local.set({linksChanged:true, links:this.links});
-        this.setState({currentLinks:newLinksList});
+            let destination = list.data[destIndex];
+
+            if(destination.type === "folder") {
+                let destination = list.data[destIndex];
+                destination.data.push(source);
+
+                list.data.splice(result.source.index, 1);
+
+                chrome.storage.local.set({linksChanged:true, links:this.links});
+                this.setState({currentLinks:list.data.slice()});
+            }
+        }
     }
 
     openFolder =(items, id)=> {

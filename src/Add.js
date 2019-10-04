@@ -1,4 +1,4 @@
-/*global chrome*/
+/*global chrome */
 import React from "react";
 import Toggle from "react-toggle";
 import PropTypes from "prop-types";
