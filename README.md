@@ -24,7 +24,7 @@ This extension provides the same experience you are used to with your browsers b
 
 ## How TO
 
-go to the settings menu and click on 'authorize access'. Once you go through Google's authorization process you should get a code. Put that code in the extension and click submit. If the file already exists in your favorites it will then load them. Otherwise it will create a new file from your existing favorites.
+Go to the settings menu (gear in the upper right) and click on 'authorize access'. Once you go through Google's authorization process you should get a code. Put that code in the extension and click submit. If the file already exists in your favorites it will then load them. Otherwise it will create a new file from your existing favorites.
 
  Once set up, click on the plus sign to add a favorite, and right click on a link or folder to edit or delete. Files can be rearanged freely with drag and drop. Drag a link into the name/image area of a folder to move it inside, or the blank area to move above/below. Drag a link into the back arrow to move it to the parent folder.
 
