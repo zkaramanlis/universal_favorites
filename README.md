@@ -24,16 +24,16 @@ This extension provides the same experience you are used to with your browsers b
 
 ## How TO
 
-go to the settings menu and click on 'authorize access'. Once you go through Google's authorization process you should get a code. Put that code in the extension and click submit. If the file already exists in your favorites it will then load them. Otherwise it will create a new file from your existing extensions.
+go to the settings menu and click on 'authorize access'. Once you go through Google's authorization process you should get a code. Put that code in the extension and click submit. If the file already exists in your favorites it will then load them. Otherwise it will create a new file from your existing favorites.
 
- Once set up, click on the plus sign to add a favorite, and right click on a link or folder to edit or delete. Files can be rearanged freely.
+ Once set up, click on the plus sign to add a favorite, and right click on a link or folder to edit or delete. Files can be rearanged freely with drag and drop. Drag a link into the name/image area of a folder to move it inside, or the blank area to move above/below. Drag a link into the back arrow to move it to the parent folder.
 
 ## FAQ
 
 - **Why google drive?** - cloud storage services was chosen as the medium to sync for 3 main reasons
 
   1. <u>To Keep It Free</u>: maintaining a server to synch the browsers would mean I would have to come up with some way monetize the extension to keep up with the costs. Not only is it much harder to monetize an extension, but this just isn't something I want to charge people for.
-  2. <u>Security and Controllability</u>: While the file is still in the cloud, drive is a secure medium to store it that keeps it away from prying eyes while still keeping it under your control. Want to delete your favorites? just delete the file.
+  2. <u>Security and Controllability</u>: While the file is still in the cloud, drive is a secure medium to store it that keeps it away from prying eyes while still keeping it under your control. Want to delete your favorites? Just delete the file.
   3. <u>It's what I use</u>: This was built because it is something I though I could use, and thus I published it because i thought others might be able to use as well. If this becomes popular enough I might consider expanding it to other cloud storage mediums as necessary.
 
 - **What about firefox and edge?** - Edge will soon become chromium based and will support chrome extensions. Firefox is in the works.
