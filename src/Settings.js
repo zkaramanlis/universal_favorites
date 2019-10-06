@@ -42,11 +42,11 @@ class Settings extends React.Component {
                     <input type="hidden" name="redirect_uri" value={clientId.installed.redirect_uris} />
                     <input type="hidden" name="response_type" value="code" />
                     <input type="hidden" name="scope" value="https://www.googleapis.com/auth/drive.file" />
-                    <button type="submit">Authorize Access</button>
+                    <button className="plainButton" type="submit">Authorize Access</button>
                 </form><br />
 
-				Code: <input key="code" type="Text" value={this.state.authCode} onChange={this.updateCode} /><br />
-                <button onClick={this.submitAuth}>Submit</button>
+				Code: <input className="inputField" key="code" type="Text" value={this.state.authCode} onChange={this.updateCode} /><br />
+                <button className="plainButton" onClick={this.submitAuth}>Submit</button>
             </div>
         );
     }

@@ -1,4 +1,3 @@
-/*global chrome */
 import React from "react";
 import Toggle from "react-toggle";
 import PropTypes from "prop-types";
@@ -17,11 +16,11 @@ class Add extends React.Component {
     }
 
     componentDidMount = () => {
-        chrome.tabs.query({"active": true, "lastFocusedWindow": true}, (tabs) => {
-            var url = tabs[0].url;
+        // chrome.tabs.query({"active": true, "lastFocusedWindow": true}, (tabs) => {
+        //     var url = tabs[0].url;
 
-            this.setState({url:url});
-        });
+        //     this.setState({url:url});
+        // });
     }
 
     static get propTypes(){
@@ -56,10 +55,10 @@ class Add extends React.Component {
                     />
                 </label><br />
 
-				Name: <input type="text" onChange={this.updateName} value={this.state.name} /><br />
-				URL: <input type="text" onChange={this.updateUrl} value={this.state.url} disabled={this.state.isFolder} /><br />
+				Name: <input className="inputField" type="text" onChange={this.updateName} value={this.state.name} /><br />
+				URL: <input className="inputField" type="text" onChange={this.updateUrl} value={this.state.url} disabled={this.state.isFolder} /><br />
 
-                <button onClick={this.submit}>Submit</button>
+                <button className="plainButton" onClick={this.submit}>Submit</button>
             </div>
         );
     }

@@ -1,5 +1,4 @@
-/*global chrome*/
-import clientId from "./client_id.json";
+//import clientId from "./client_id.json";
 import axios from "axios";
 
 export async function checkForFile() {
@@ -116,22 +115,22 @@ export async function updateFile(id, links) {
 }
 
 export async function refreshToken() {
-    return new Promise((resolve, reject) => {
-        chrome.storage.local.get(["refreshToken"], (result) => {
-            if(result.refreshToken){
-                axios.post("https://oauth2.googleapis.com/token", {
-                    refresh_token:result.refreshToken,
-                    client_id:clientId.installed.client_id,
-                    client_secret:clientId.installed.client_secret,
-                    grant_type:"refresh_token"
-                }).then(res => {
-                    axios.defaults.headers.common["Authorization"] = "Bearer " + res.data.accessToken;
-                    chrome.storage.local.set({accessToken:res.data.access_token});
-                    resolve();
-                }).catch(err => reject(err));
-            }
+    // return new Promise((resolve, reject) => {
+    //     chrome.storage.local.get(["refreshToken"], (result) => {
+    //         if(result.refreshToken){
+    //             axios.post("https://oauth2.googleapis.com/token", {
+    //                 refresh_token:result.refreshToken,
+    //                 client_id:clientId.installed.client_id,
+    //                 client_secret:clientId.installed.client_secret,
+    //                 grant_type:"refresh_token"
+    //             }).then(res => {
+    //                 axios.defaults.headers.common["Authorization"] = "Bearer " + res.data.accessToken;
+    //                 chrome.storage.local.set({accessToken:res.data.access_token});
+    //                 resolve();
+    //             }).catch(err => reject(err));
+    //         }
 
-            reject("no refresh token");
-        });
-    });
+    //         reject("no refresh token");
+    //     });
+    // });
 }
