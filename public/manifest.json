@@ -4,7 +4,7 @@
   "name": "Favorites Bar",
   "author": "Zachary Karamanlis",
   "version": "1.0",
-  "description": "Favorites bar that sync to a file",
+  "description": "favorites manager that syncs with google drive",
   "browser_action": {
     "default_popup": "index.html"
   },
@@ -19,13 +19,6 @@
     "128": "icon-128.png"
   },
   "background": {
-    "scripts": ["background.js"],
-    "persistant":false
-  },
-  "oauth2": {
-    "client_id": "560940426128-giooumtobj8eapjg89o8q5r718c4hb2s.apps.googleusercontent.com",
-    "scopes": [
-      "https://www.googleapis.com/auth/drive.file"
-    ]
+    "scripts": ["background.js"]
   }
 }

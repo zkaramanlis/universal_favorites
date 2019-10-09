@@ -6,7 +6,7 @@ import Settings from "./Settings";
 import Add from "./Add";
 import {checkForFile, getFile, uploadFile, getLastChanged} from "./Network";
 import axios from "axios";
-import { ContextMenu, MenuItem } from "react-contextmenu";
+import { ContextMenu, MenuItem, hideMenu } from "react-contextmenu";
 import Edit from "./Edit";
 import { isMobile, browserName } from "react-device-detect";
 import { DndProvider } from "react-dnd";
@@ -118,6 +118,7 @@ class App extends React.Component {
                 <ContextMenu id="ContextMenu">
                     <MenuItem onClick={this.edit}>Edit</MenuItem>
                     <MenuItem onClick={this.delete}>Delete</MenuItem>
+                    <MenuItem onClick={() => hideMenu()}>Close</MenuItem>
                 </ContextMenu>
             </DndProvider>
         );

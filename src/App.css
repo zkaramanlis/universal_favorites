@@ -59,7 +59,8 @@ a{
     color:red;
 }
 .inputField{
-    width: 99%;
+    box-sizing: border-box;
+    width: 150px;
     display: block;
     margin: auto;
     height: 20px;
