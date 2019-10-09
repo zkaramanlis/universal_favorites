@@ -73,3 +73,21 @@ a{
     padding: 5px;
     height: 20px;
 }
+#ContextMenu{
+    position: absolute;
+    width: 40px;
+    background-color: white;
+    border: 1px solid black;
+    box-shadow: 3px 3px 2px grey;
+    font-size: 12px;
+}
+#ContextMenu span {
+    display: block;
+    width:100%;
+    padding: 1px;
+    box-sizing: border-box;
+    cursor: pointer;
+}
+#ContextMenu span:hover {
+    background-color: lightgray;
+}

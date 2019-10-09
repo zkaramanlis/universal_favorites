@@ -85,9 +85,6 @@ a{
     display: block;
     font-size: 1rem;
 }
-.react-contextmenu{
-    font-size: 1rem;
-}
 .dragBox{
     background-color: lightgray;
     opacity: 0.5;
@@ -96,4 +93,23 @@ a{
     height: 40px;
     font-size: 1.2rem;
     width: 100%;
+}
+#ContextMenu{
+    position: absolute;
+    width: 80px;
+    background-color: white;
+    border: 1px solid black;
+    box-shadow: 3px 3px 2px grey;
+    text-align: center;
+}
+#ContextMenu span {
+    display: block;
+    width:100%;
+    padding: 2px;
+    box-sizing: border-box;
+    font-size: 1rem;
+    cursor: pointer;
+}
+#ContextMenu span:hover {
+    background-color: lightgray;
 }

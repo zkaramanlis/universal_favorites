@@ -6,7 +6,6 @@ import Settings from "./Settings";
 import Add from "./Add";
 import {checkForFile, getFile, uploadFile, getLastChanged} from "./Network";
 import axios from "axios";
-import { ContextMenu, MenuItem, hideMenu } from "react-contextmenu";
 import Edit from "./Edit";
 import { isMobile, browserName } from "react-device-detect";
 import { DndProvider } from "react-dnd";
@@ -35,6 +34,8 @@ class App extends React.Component {
         };
         this.history = [];
 
+        this.rightClickRef = React.createRef();
+
         this.state = {
             currentLinks:[],
             backDisabled:true,
@@ -44,7 +45,10 @@ class App extends React.Component {
             editMenu:false,
             editLink:"",
             searchString:"",
-            draggingId:null
+            draggingId:null,
+            hideContextMenu:true,
+            contextX:0,
+            contextY:0
         };
     }
 
@@ -113,13 +117,17 @@ class App extends React.Component {
                     <input type="text" className="inputField" placeholder="Search" onChange={this.search} value={this.state.searchString} />
 
                     <LinkColumn openFolder={this.openFolder} links={this.state.currentLinks} draggingId={this.state.draggingId}
-                        dropElement={this.dropElement} saveDraggingId={this.saveDraggingId} />
+                        dropElement={this.dropElement} saveDraggingId={this.saveDraggingId} showContextMenu={this.showContextMenu} />
                 </div>
-                <ContextMenu id="ContextMenu">
-                    <MenuItem onClick={this.edit}>Edit</MenuItem>
-                    <MenuItem onClick={this.delete}>Delete</MenuItem>
-                    <MenuItem onClick={() => hideMenu()}>Close</MenuItem>
-                </ContextMenu>
+                <div id="ContextMenu" hidden={this.state.hideContextMenu} ref={this.rightClickRef}
+                    style={{left:this.state.contextX, bottom:this.state.contextY}}>
+                    <span onClick={this.edit}>Edit</span>
+                    <span onClick={this.delete}>Delete</span>
+                    <span onClick={() => {
+                        document.removeEventListener("click", this.handleClick);
+                        this.setState({hideContextMenu:true});
+                    }}>Close</span>
+                </div>
             </DndProvider>
         );
     }
@@ -231,9 +239,27 @@ class App extends React.Component {
         this.setState({currentLinks:parentList.data.slice(), backDisabled:backDisabled});
     }
 
-    edit = (e, data) => {
+    handleClick = (event) => {
+        let isOutside = !(event.target.contains === this.rightClickRef);
+        if(isOutside) {
+            document.removeEventListener("click", this.handleClick);
+            this.setState({hideContextMenu:true});
+        }
+    }
 
-        this.linkId = data.linkId;
+    showContextMenu = (event, id) => {
+        event.preventDefault();
+
+        let x = event.clientX;
+        let y = window.innerHeight - event.clientY;
+
+        document.addEventListener("click", this.handleClick);
+
+        this.linkId = id;
+        this.setState({hideContextMenu:false, contextX:x, contextY:y});
+    }
+
+    edit = () => {
 
         let currentLinksItem = this.state.currentLinks[this.linkId];
         if(currentLinksItem.history) {
@@ -251,17 +277,17 @@ class App extends React.Component {
             backDisabled = true;
         }
 
-        this.setState({editLink:list.data[this.linkId], editMenu:true, backDisabled:backDisabled, searchString:"", addDisabled:false});
+        document.removeEventListener("click", this.handleClick);
+        this.setState({editLink:list.data[this.linkId], editMenu:true, hideContextMenu:true,
+            backDisabled:backDisabled, searchString:"", addDisabled:false, currentLinks:list.data.slice()});
     }
 
-    delete = (e, data) => {
+    delete = () => {
 
-        let linkId = data.linkId;
-
-        let currentLinksItem = this.state.currentLinks[linkId];
+        let currentLinksItem = this.state.currentLinks[this.linkId];
         if(currentLinksItem.history) {
             this.history = currentLinksItem.history;
-            linkId = this.history.pop();
+            this.linkId = this.history.pop();
         }
 
         let list = this.links;
@@ -269,19 +295,22 @@ class App extends React.Component {
             list = list.data[id];
         });
 
-        list.data.splice(linkId, 1);
+        list.data.splice(this.linkId, 1);
 
         let backDisabled = this.state.backDisabled;
         if(this.history.length === 0) {
             backDisabled = true;
         }
 
+        document.removeEventListener("click", this.handleClick);
+
         if(browserName === "Firefox" || browserName === "Edge") {
             browser.storage.local.set({linksChanged:true, links:this.links});
         } else {
             chrome.storage.local.set({linksChanged:true, links:this.links});
         }
-        this.setState({currentLinks:list.data.slice(), searchString:"", backDisabled:backDisabled, addDisabled:false});
+        this.setState({currentLinks:list.data.slice(), searchString:"", hideContextMenu:true,
+            backDisabled:backDisabled, addDisabled:false});
     }
 
     saveEdit = (link) => {
