@@ -1,6 +1,8 @@
+/*global chrome browser*/
 import React from "react";
 import Toggle from "react-toggle";
 import PropTypes from "prop-types";
+import { browserName } from "react-device-detect";
 import "react-toggle/style.css";
 
 class Add extends React.Component {
@@ -16,11 +18,19 @@ class Add extends React.Component {
     }
 
     componentDidMount = () => {
-        // chrome.tabs.query({"active": true, "lastFocusedWindow": true}, (tabs) => {
-        //     var url = tabs[0].url;
+        if(browserName === "Firefox" || browserName === "Edge") {
+            browser.tabs.query({"active": true, "lastFocusedWindow": true}).then((tabs) => {
+                var url = tabs[0].url;
 
-        //     this.setState({url:url});
-        // });
+                this.setState({url:url});
+            }).catch(err => console.error(err));
+        } else {
+            chrome.tabs.query({"active": true, "lastFocusedWindow": true}, (tabs) => {
+                var url = tabs[0].url;
+
+                this.setState({url:url});
+            });
+        }
     }
 
     static get propTypes(){

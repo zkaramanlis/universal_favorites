@@ -1,13 +1,14 @@
+/*global chrome browser*/
 import React from "react";
 import ButtonRow from "./ButtonRow";
 import LinkColumn from "./LinkColumn";
 import Settings from "./Settings";
 import Add from "./Add";
-import {checkForFile, getFile, /*uploadFile, getLastChanged*/} from "./Network";
+import {checkForFile, getFile, uploadFile, getLastChanged} from "./Network";
 import axios from "axios";
 import { ContextMenu, MenuItem } from "react-contextmenu";
 import Edit from "./Edit";
-import {isMobile} from "react-device-detect";
+import { isMobile, browserName } from "react-device-detect";
 import { DndProvider } from "react-dnd";
 import HTML5Backend from "react-dnd-html5-backend";
 import TouchBackend from "react-dnd-touch-backend";
@@ -37,7 +38,6 @@ class App extends React.Component {
         this.state = {
             currentLinks:[],
             backDisabled:true,
-            settingsDisabled:false,
             addDisabled:false,
             settingsMenu:false,
             addMenu:false,
@@ -49,33 +49,44 @@ class App extends React.Component {
     }
 
     componentDidMount = () => {
-        // chrome.storage.local.get(["settingsMenu", "accessToken", "links", "fileId", "date"], (result) => {
-        //     this.setState({settingsMenu:result.settingsMenu});
+        if(browserName === "Firefox" || browserName === "Edge") {
+            browser.storage.local.get(["settingsMenu", "accessToken", "links", "fileId", "date"])
+                .then(this.mountCallback, (err) => console.log(err));
+            browser.runtime.connect();
+        }
+        else {
+            chrome.storage.local.get(["settingsMenu", "accessToken", "links", "fileId", "date"], this.mountCallback);
+            chrome.runtime.connect();
+        }
+    }
 
-        //     if(result.links) {
-        //         this.links = result.links;
-        //         this.setState({currentLinks:result.links.data});
-        //     }
+    mountCallback = (result) => {
+        this.setState({settingsMenu:result.settingsMenu});
 
-        //     if(result.accessToken && result.fileId && result.date) {
-        //         axios.defaults.headers.common["Authorization"] = "Bearer " + result.accessToken;
+        if(result.links) {
+            this.links = result.links;
+            this.setState({currentLinks:result.links.data});
+        }
+
+        if(result.accessToken && result.fileId && result.date) {
+            axios.defaults.headers.common["Authorization"] = "Bearer " + result.accessToken;
     
-        //         getLastChanged(result.fileId)
-        //             .then(date => {
-        //                 if(date !== result.date) {
-        //                     getFile(result.fileId)
-        //                         .then(file => {
-        //                             this.links = file;
-
-        //                             chrome.storage.local.set({links:file, date:date});
-        //                             this.setState({currentLinks:this.links.data});
-        //                         });
-        //                 }
-        //             });
-        //     }
-        // });
-
-        // chrome.runtime.connect();
+            getLastChanged(result.fileId)
+                .then(date => {
+                    if(date !== result.date) {
+                        getFile(result.fileId)
+                            .then(file => {
+                                this.links = file;
+                                if(browserName === "Firefox" || browserName === "Edge") {
+                                    browser.storage.local.set({links:file, date:date});
+                                } else {
+                                    chrome.storage.local.set({links:file, date:date});
+                                }
+                                this.setState({currentLinks:this.links.data});
+                            });
+                    }
+                });
+        }
     }
   
     render() {
@@ -97,8 +108,7 @@ class App extends React.Component {
             <DndProvider backend={backend}>
                 <div className="menu">
                     <CustomDragLayer />
-                    <ButtonRow backDisabled={this.state.backDisabled} goBack={this.goBack}
-                        settingsDisabled={this.state.settingsDisabled} settings={this.openSettings} 
+                    <ButtonRow backDisabled={this.state.backDisabled} goBack={this.goBack} settings={this.openSettings} 
                         addDisabled={this.state.addDisabled} add={this.openAddMenu} moveUp={this.moveUp} />
                     <input type="text" className="inputField" placeholder="Search" onChange={this.search} value={this.state.searchString} />
 
@@ -139,11 +149,22 @@ class App extends React.Component {
             list.data.splice(droppingId, 0, source);
         }
            
-        //chrome.storage.local.set({linksChanged:true, links:this.links});
+        if(browserName === "Firefox" || browserName === "Edge") {
+            browser.storage.local.set({linksChanged:true, links:this.links});
+        } else {
+            chrome.storage.local.set({linksChanged:true, links:this.links});
+        }
         this.setState({currentLinks:list.data});
     }
 
-    search = (searchString) => {
+    search = (event) => {
+        let searchString = event.target.value.toLowerCase();
+
+        if(searchString === "") {
+            this.setState({currentLinks:this.links.data, backDisabled:true, addDisabled:false, searchString:""});
+            return;
+        }
+
         let topFolder = Object.assign({}, this.links);
         topFolder.history = [];
 
@@ -155,7 +176,7 @@ class App extends React.Component {
 
             folder.data.forEach((element, id) => {
                 if(element.type === "link") {
-                    if(element.label.includes(searchString)) {
+                    if(element.label.toLowerCase().includes(searchString)) {
                         let link = Object.assign({}, element);
                         link.history = folder.history.slice();
                         link.history.push(id);
@@ -174,7 +195,7 @@ class App extends React.Component {
 
         this.history = [];
 
-        this.setState({currentLinks:results, backDisabled:false, addDisabled:true, searchString:searchString});
+        this.setState({currentLinks:results, backDisabled:false, addDisabled:true, searchString:event.target.value});
     }
 
     moveUp = (draggingId) => {
@@ -201,7 +222,11 @@ class App extends React.Component {
             backDisabled = true;
         }
 
-        //chrome.storage.local.set({linksChanged:true, links:this.links});
+        if(browserName === "Firefox" || browserName === "Edge") {
+            browser.storage.local.set({linksChanged:true, links:this.links});
+        } else {
+            chrome.storage.local.set({linksChanged:true, links:this.links});
+        }
         this.setState({currentLinks:parentList.data.slice(), backDisabled:backDisabled});
     }
 
@@ -221,12 +246,11 @@ class App extends React.Component {
         });
 
         let backDisabled = this.state.backDisabled;
-        if(this.history === []) {
+        if(this.history.length === 0) {
             backDisabled = true;
         }
 
-        this.setState({editLink:list.data[this.linkId], editMenu:true, searchString:"", 
-            backDisabled:backDisabled, addDisabled:false});
+        this.setState({editLink:list.data[this.linkId], editMenu:true, backDisabled:backDisabled, searchString:"", addDisabled:false});
     }
 
     delete = (e, data) => {
@@ -247,11 +271,15 @@ class App extends React.Component {
         list.data.splice(linkId, 1);
 
         let backDisabled = this.state.backDisabled;
-        if(this.history === []) {
+        if(this.history.length === 0) {
             backDisabled = true;
         }
 
-        //chrome.storage.local.set({linksChanged:true, links:this.links});
+        if(browserName === "Firefox" || browserName === "Edge") {
+            browser.storage.local.set({linksChanged:true, links:this.links});
+        } else {
+            chrome.storage.local.set({linksChanged:true, links:this.links});
+        }
         this.setState({currentLinks:list.data.slice(), searchString:"", backDisabled:backDisabled, addDisabled:false});
     }
 
@@ -263,12 +291,20 @@ class App extends React.Component {
 
         list.data[this.linkId] = link;
 
-        //chrome.storage.local.set({linksChanged:true, links:this.links});
+        if(browserName === "Firefox" || browserName === "Edge") {
+            browser.storage.local.set({linksChanged:true, links:this.links});
+        } else {
+            chrome.storage.local.set({linksChanged:true, links:this.links});
+        }
         this.setState({currentLinks:list.data.slice(), editMenu:false});
     }
 
     sync = async (accessToken, refreshToken) => {
-        //chrome.storage.local.set({accessToken:accessToken, refreshToken:refreshToken});
+        if(browserName === "Firefox" || browserName === "Edge") {
+            browser.storage.local.set({accessToken:accessToken, refreshToken:refreshToken});
+        } else {
+            chrome.storage.local.set({accessToken:accessToken, refreshToken:refreshToken});
+        }
 
         axios.defaults.headers.common["Authorization"] = "Bearer " + accessToken;
 
@@ -278,15 +314,23 @@ class App extends React.Component {
 
             this.links = file;
 
-            //let date = await getLastChanged(id);
+            let date = await getLastChanged(id);
 
-            //chrome.storage.local.set({fileId:id, links:this.links, date:date, settingsMenu:false});
+            if(browserName === "Firefox" || browserName === "Edge") {
+                browser.storage.local.set({fileId:id, links:this.links, date:date, settingsMenu:false});
+            } else {
+                chrome.storage.local.set({fileId:id, links:this.links, date:date, settingsMenu:false});
+            }
             this.setState({currentLinks:this.links.data, settingsMenu:false});
         }
         else{
-            //let res = await uploadFile(this.links);
+            let res = await uploadFile(this.links);
 
-            //chrome.storage.local.set({fileId:res.id, links:this.links, date:res.modifiedTime, settingsMenu:false});
+            if(browserName === "Firefox" || browserName === "Edge") {
+                browser.storage.local.set({fileId:res.id, links:this.links, date:res.modifiedTime, settingsMenu:false});
+            } else {
+                chrome.storage.local.set({fileId:res.id, links:this.links, date:res.modifiedTime, settingsMenu:false});
+            }
             this.setState({settingsMenu:false});
         }
     }
@@ -301,7 +345,12 @@ class App extends React.Component {
         newLinksList.push({type:"folder", label:name, data:[]});
 
         list.data = newLinksList;
-        //chrome.storage.local.set({linksChanged:true, links:this.links});
+
+        if(browserName === "Firefox" || browserName === "Edge") {
+            browser.storage.local.set({linksChanged:true, links:this.links});
+        } else {
+            chrome.storage.local.set({linksChanged:true, links:this.links});
+        }
         this.setState({currentLinks:newLinksList, addMenu:false});
     }
 
@@ -315,17 +364,30 @@ class App extends React.Component {
         newLinksList.push({type:"link", label:name, link:url});
 
         list.data = newLinksList;
-        //chrome.storage.local.set({linksChanged:true, links:this.links});
+
+        if(browserName === "Firefox" || browserName === "Edge") {
+            browser.storage.local.set({linksChanged:true, links:this.links});
+        } else {
+            chrome.storage.local.set({linksChanged:true, links:this.links});
+        }
         this.setState({currentLinks:newLinksList, addMenu:false});
     }
 
     closeSubMenu = () => {
-        //chrome.storage.local.set({settingsMenu:false});
+        if(browserName === "Firefox" || browserName === "Edge") {
+            browser.storage.local.set({settingsMenu:false});
+        } else {
+            chrome.storage.local.set({settingsMenu:false});
+        }
         this.setState({settingsMenu:false, addMenu:false, editMenu:false});
     }
 
     openSettings = () => {
-        //chrome.storage.local.set({settingsMenu:true});
+        if(browserName === "Firefox" || browserName === "Edge") {
+            browser.storage.local.set({settingsMenu:true});
+        } else {
+            chrome.storage.local.set({settingsMenu:true});
+        }
         this.setState({settingsMenu:true});
     }
 
