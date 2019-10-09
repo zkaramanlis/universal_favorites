@@ -3,12 +3,12 @@
 	flex-direction: row;
 }
 .menuButton{
-	width: 35px;
+	width: 25%;
 	background-color: white;
 	border: none;
 	border-bottom: 1px solid gray;
 	cursor: pointer;
-	padding-top: 5px;
+    padding-top: 5px;
 }
 .menuButton:hover{
 	background-color: lightgray;
@@ -18,8 +18,8 @@
 	background-color: white;
 }
 #backButton{
-	width: 80px;
+	width: 50%;
 }
 #onlyBack{
-	width: 150px;
+	width: 100%;
 }

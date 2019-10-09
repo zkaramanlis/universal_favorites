@@ -1,17 +1,26 @@
-/*global chrome*/
+/*global chrome browser*/
 import React from "react";
 import ButtonRow from "./ButtonRow";
 import LinkColumn from "./LinkColumn";
-import { DragDropContext } from "react-beautiful-dnd";
 import Settings from "./Settings";
 import Add from "./Add";
 import {checkForFile, getFile, uploadFile, getLastChanged} from "./Network";
 import axios from "axios";
 import { ContextMenu, MenuItem } from "react-contextmenu";
 import Edit from "./Edit";
-import "./App.css";
+import { isMobile, browserName } from "react-device-detect";
+import { DndProvider } from "react-dnd";
+import HTML5Backend from "react-dnd-html5-backend";
+import TouchBackend from "react-dnd-touch-backend";
+import CustomDragLayer from "./CustomDragLayer";
 import "./ButtonRow.css";
 import "./react-contextmenu.css";
+if(isMobile) {
+    import("./App-mobile.css").then(() => true);
+}
+else {
+    import("./App.css").then(() => true);
+}
 
 
 class App extends React.Component {
@@ -26,52 +35,66 @@ class App extends React.Component {
         };
         this.history = [];
 
-        this.linkId = 0;
-
         this.state = {
             currentLinks:[],
             backDisabled:true,
-            settingsDisabled:false,
             addDisabled:false,
             settingsMenu:false,
             addMenu:false,
             editMenu:false,
             editLink:"",
-            searchString:""
+            searchString:"",
+            draggingId:null
         };
     }
 
     componentDidMount = () => {
-        chrome.storage.local.get(["settingsMenu", "accessToken", "links", "fileId", "date"], (result) => {
-            this.setState({settingsMenu:result.settingsMenu});
+        if(browserName === "Firefox" || browserName === "Edge") {
+            browser.storage.local.get(["settingsMenu", "accessToken", "links", "fileId", "date"])
+                .then(this.mountCallback, (err) => console.log(err));
+            browser.runtime.connect();
+        }
+        else {
+            chrome.storage.local.get(["settingsMenu", "accessToken", "links", "fileId", "date"], this.mountCallback);
+            chrome.runtime.connect();
+        }
+    }
 
-            if(result.links) {
-                this.links = result.links;
-                this.setState({currentLinks:result.links.data});
-            }
+    mountCallback = (result) => {
+        this.setState({settingsMenu:result.settingsMenu});
 
-            if(result.accessToken && result.fileId && result.date) {
-                axios.defaults.headers.common["Authorization"] = "Bearer " + result.accessToken;
+        if(result.links) {
+            this.links = result.links;
+            this.setState({currentLinks:result.links.data});
+        }
+
+        if(result.accessToken && result.fileId && result.date) {
+            axios.defaults.headers.common["Authorization"] = "Bearer " + result.accessToken;
     
-                getLastChanged(result.fileId)
-                    .then(date => {
-                        if(date !== result.date) {
-                            getFile(result.fileId)
-                                .then(file => {
-                                    this.links = file;
-
+            getLastChanged(result.fileId)
+                .then(date => {
+                    if(date !== result.date) {
+                        getFile(result.fileId)
+                            .then(file => {
+                                this.links = file;
+                                if(browserName === "Firefox" || browserName === "Edge") {
+                                    browser.storage.local.set({links:file, date:date});
+                                } else {
                                     chrome.storage.local.set({links:file, date:date});
-                                    this.setState({currentLinks:this.links.data});
-                                });
-                        }
-                    });
-            }
-        });
-
-        chrome.runtime.connect();
+                                }
+                                this.setState({currentLinks:this.links.data});
+                            });
+                    }
+                });
+        }
     }
   
     render() {
+        let backend = HTML5Backend;
+        if(isMobile) {
+            backend = TouchBackend;
+        }
+
         if(this.state.settingsMenu) {
             return (<Settings goBack={this.closeSubMenu} sync={this.sync} />);
         }
@@ -82,27 +105,66 @@ class App extends React.Component {
             return <Edit goBack={this.closeSubMenu} link={this.state.editLink} save={this.saveEdit} />;
         }
         return (
-            <div>
-                <DragDropContext onDragEnd={this.onDragEnd}>
-                    <div className="menu">
-                        <ButtonRow backDisabled={this.state.backDisabled} goBack={this.goBack}
-                            settingsDisabled={this.state.settingsDisabled} settings={this.openSettings} 
-                            addDisabled={this.state.addDisabled} add={this.openAddMenu}/>
+            <DndProvider backend={backend}>
+                <div className="menu">
+                    <CustomDragLayer />
+                    <ButtonRow backDisabled={this.state.backDisabled} goBack={this.goBack} settings={this.openSettings} 
+                        addDisabled={this.state.addDisabled} add={this.openAddMenu} moveUp={this.moveUp} />
+                    <input type="text" className="inputField" placeholder="Search" onChange={this.search} value={this.state.searchString} />
 
-                        <LinkColumn searchString={this.state.searchString} openFolder={this.openFolder} 
-                            links={this.state.currentLinks} search={this.search} />
-                    </div>
-                </DragDropContext>
+                    <LinkColumn openFolder={this.openFolder} links={this.state.currentLinks} draggingId={this.state.draggingId}
+                        dropElement={this.dropElement} saveDraggingId={this.saveDraggingId} />
+                </div>
                 <ContextMenu id="ContextMenu">
                     <MenuItem onClick={this.edit}>Edit</MenuItem>
-                    <MenuItem onClick={this.moveUp} disabled={this.state.backDisabled}>Move Up</MenuItem>
                     <MenuItem onClick={this.delete}>Delete</MenuItem>
                 </ContextMenu>
-            </div>
+            </DndProvider>
         );
     }
 
-    search = (searchString) => {
+    saveDraggingId = (id) => {
+        this.setState({draggingId:id});
+    }
+
+    dropElement = (droppingId, draggingId, isFolder) => {
+
+        if(isNaN(draggingId) || draggingId === droppingId || this.state.searchString) {
+            return;
+        }
+
+        let list = this.links;
+        this.history.forEach(id => {
+            list = list.data[id];
+        });
+
+        let destination = list.data[droppingId];
+        let source = list.data[draggingId];
+        list.data.splice(draggingId, 1);
+        
+        if(destination && isFolder) {
+            destination.data.push(source);
+        }
+        else {
+            list.data.splice(droppingId, 0, source);
+        }
+           
+        if(browserName === "Firefox" || browserName === "Edge") {
+            browser.storage.local.set({linksChanged:true, links:this.links});
+        } else {
+            chrome.storage.local.set({linksChanged:true, links:this.links});
+        }
+        this.setState({currentLinks:list.data});
+    }
+
+    search = (event) => {
+        let searchString = event.target.value.toLowerCase();
+
+        if(searchString === "") {
+            this.setState({currentLinks:this.links.data, backDisabled:true, addDisabled:false, searchString:""});
+            return;
+        }
+
         let topFolder = Object.assign({}, this.links);
         topFolder.history = [];
 
@@ -114,7 +176,7 @@ class App extends React.Component {
 
             folder.data.forEach((element, id) => {
                 if(element.type === "link") {
-                    if(element.label.includes(searchString)) {
+                    if(element.label.toLowerCase().includes(searchString)) {
                         let link = Object.assign({}, element);
                         link.history = folder.history.slice();
                         link.history.push(id);
@@ -133,17 +195,13 @@ class App extends React.Component {
 
         this.history = [];
 
-        this.setState({currentLinks:results, backDisabled:false, addDisabled:true, searchString:searchString});
+        this.setState({currentLinks:results, backDisabled:false, addDisabled:true, searchString:event.target.value});
     }
 
-    moveUp = (e, data) => {
+    moveUp = (draggingId) => {
 
-        let linkId = data.linkId;
-
-        let currentLinksItem = this.state.currentLinks[this.linkId];
-        if(currentLinksItem.history) {
-            this.history = currentLinksItem.history;
-            this.linkId = this.history.pop();
+        if(this.state.searchString || this.state.backDisabled) {
+            return;
         }
 
         let list = this.links;
@@ -153,18 +211,23 @@ class App extends React.Component {
             list = list.data[id];
         });
 
-        let link = list.data[linkId];
-        list.data.splice(linkId, 1);
+        let link = list.data[draggingId];
+        list.data.splice(draggingId, 1);
         parentList.data.push(link);
 
         this.history.pop();
+
         let backDisabled = this.state.backDisabled;
         if(parentList.type === "home") {
             backDisabled = true;
         }
 
-        chrome.storage.local.set({linksChanged:true, links:this.links});
-        this.setState({currentLinks:parentList.data.slice(), searchString:"", backDisabled:backDisabled, addDisabled:false});
+        if(browserName === "Firefox" || browserName === "Edge") {
+            browser.storage.local.set({linksChanged:true, links:this.links});
+        } else {
+            chrome.storage.local.set({linksChanged:true, links:this.links});
+        }
+        this.setState({currentLinks:parentList.data.slice(), backDisabled:backDisabled});
     }
 
     edit = (e, data) => {
@@ -183,12 +246,11 @@ class App extends React.Component {
         });
 
         let backDisabled = this.state.backDisabled;
-        if(this.history === []) {
+        if(this.history.length === 0) {
             backDisabled = true;
         }
 
-        this.setState({editLink:list.data[this.linkId], editMenu:true, searchString:"", 
-            backDisabled:backDisabled, addDisabled:false});
+        this.setState({editLink:list.data[this.linkId], editMenu:true, backDisabled:backDisabled, searchString:"", addDisabled:false});
     }
 
     delete = (e, data) => {
@@ -209,11 +271,15 @@ class App extends React.Component {
         list.data.splice(linkId, 1);
 
         let backDisabled = this.state.backDisabled;
-        if(this.history === []) {
+        if(this.history.length === 0) {
             backDisabled = true;
         }
 
-        chrome.storage.local.set({linksChanged:true, links:this.links});
+        if(browserName === "Firefox" || browserName === "Edge") {
+            browser.storage.local.set({linksChanged:true, links:this.links});
+        } else {
+            chrome.storage.local.set({linksChanged:true, links:this.links});
+        }
         this.setState({currentLinks:list.data.slice(), searchString:"", backDisabled:backDisabled, addDisabled:false});
     }
 
@@ -225,12 +291,20 @@ class App extends React.Component {
 
         list.data[this.linkId] = link;
 
-        chrome.storage.local.set({linksChanged:true, links:this.links});
+        if(browserName === "Firefox" || browserName === "Edge") {
+            browser.storage.local.set({linksChanged:true, links:this.links});
+        } else {
+            chrome.storage.local.set({linksChanged:true, links:this.links});
+        }
         this.setState({currentLinks:list.data.slice(), editMenu:false});
     }
 
     sync = async (accessToken, refreshToken) => {
-        chrome.storage.local.set({accessToken:accessToken, refreshToken:refreshToken});
+        if(browserName === "Firefox" || browserName === "Edge") {
+            browser.storage.local.set({accessToken:accessToken, refreshToken:refreshToken});
+        } else {
+            chrome.storage.local.set({accessToken:accessToken, refreshToken:refreshToken});
+        }
 
         axios.defaults.headers.common["Authorization"] = "Bearer " + accessToken;
 
@@ -242,13 +316,21 @@ class App extends React.Component {
 
             let date = await getLastChanged(id);
 
-            chrome.storage.local.set({fileId:id, links:this.links, date:date, settingsMenu:false});
+            if(browserName === "Firefox" || browserName === "Edge") {
+                browser.storage.local.set({fileId:id, links:this.links, date:date, settingsMenu:false});
+            } else {
+                chrome.storage.local.set({fileId:id, links:this.links, date:date, settingsMenu:false});
+            }
             this.setState({currentLinks:this.links.data, settingsMenu:false});
         }
         else{
             let res = await uploadFile(this.links);
 
-            chrome.storage.local.set({fileId:res.id, links:this.links, date:res.modifiedTime, settingsMenu:false});
+            if(browserName === "Firefox" || browserName === "Edge") {
+                browser.storage.local.set({fileId:res.id, links:this.links, date:res.modifiedTime, settingsMenu:false});
+            } else {
+                chrome.storage.local.set({fileId:res.id, links:this.links, date:res.modifiedTime, settingsMenu:false});
+            }
             this.setState({settingsMenu:false});
         }
     }
@@ -263,7 +345,12 @@ class App extends React.Component {
         newLinksList.push({type:"folder", label:name, data:[]});
 
         list.data = newLinksList;
-        chrome.storage.local.set({linksChanged:true, links:this.links});
+
+        if(browserName === "Firefox" || browserName === "Edge") {
+            browser.storage.local.set({linksChanged:true, links:this.links});
+        } else {
+            chrome.storage.local.set({linksChanged:true, links:this.links});
+        }
         this.setState({currentLinks:newLinksList, addMenu:false});
     }
 
@@ -277,54 +364,35 @@ class App extends React.Component {
         newLinksList.push({type:"link", label:name, link:url});
 
         list.data = newLinksList;
-        chrome.storage.local.set({linksChanged:true, links:this.links});
+
+        if(browserName === "Firefox" || browserName === "Edge") {
+            browser.storage.local.set({linksChanged:true, links:this.links});
+        } else {
+            chrome.storage.local.set({linksChanged:true, links:this.links});
+        }
         this.setState({currentLinks:newLinksList, addMenu:false});
     }
 
     closeSubMenu = () => {
-        chrome.storage.local.set({settingsMenu:false});
+        if(browserName === "Firefox" || browserName === "Edge") {
+            browser.storage.local.set({settingsMenu:false});
+        } else {
+            chrome.storage.local.set({settingsMenu:false});
+        }
         this.setState({settingsMenu:false, addMenu:false, editMenu:false});
     }
 
     openSettings = () => {
-        chrome.storage.local.set({settingsMenu:true});
+        if(browserName === "Firefox" || browserName === "Edge") {
+            browser.storage.local.set({settingsMenu:true});
+        } else {
+            chrome.storage.local.set({settingsMenu:true});
+        }
         this.setState({settingsMenu:true});
     }
 
     openAddMenu = () => {
         this.setState({addMenu:true});
-    }
-
-    onDragEnd =(result)=> {
-        let list = this.links;
-        this.history.forEach(id => {
-            list = list.data[id];
-        });
-
-        let source = list.data[result.source.index];
-
-        if(result.destination) {
-            list.data.splice(result.source.index, 1);
-            list.data.splice(result.destination.index, 0, source);
-
-            chrome.storage.local.set({linksChanged:true, links:this.links});
-            this.setState({currentLinks:list.data.slice()});
-        }
-        if (result.combine) {
-            let destIndex = Number(result.combine.draggableId);
-
-            let destination = list.data[destIndex];
-
-            if(destination.type === "folder") {
-                let destination = list.data[destIndex];
-                destination.data.push(source);
-
-                list.data.splice(result.source.index, 1);
-
-                chrome.storage.local.set({linksChanged:true, links:this.links});
-                this.setState({currentLinks:list.data.slice()});
-            }
-        }
     }
 
     openFolder =(items, id)=> {
