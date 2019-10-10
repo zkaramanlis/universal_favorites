@@ -54,7 +54,7 @@ if(browserName === "Firefox" || browserName === "Edge") {
                                     chrome.storage.local.set({links:file, date:date});
                                 });
                         }
-                    });
+                    }).catch(err => console.error(err));;
             }
         });
     });
@@ -69,7 +69,7 @@ if(browserName === "Firefox" || browserName === "Edge") {
                     updateFile(result.fileId, result.links)
                         .then(res => {
                             chrome.storage.local.set({fileId:res.id, date:res.modifiedTime});
-                        });
+                        }).catch(err => console.error(err));;
                 }
             });
         });
