@@ -1,10 +1,10 @@
 
 {
   "manifest_version": 2,
-  "name": "Favorites Bar",
+  "name": "Universal Favorites",
   "author": "Zachary Karamanlis",
   "version": "1.0",
-  "description": "favorites manager that syncs with google drive",
+  "description": "browser independant favorites manager that syncs with google drive",
   "browser_action": {
     "default_popup": "index.html"
   },
