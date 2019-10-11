@@ -61,8 +61,8 @@ function Link(props) {
     }
 
     let label = props.item.label;
-    if(label.length > 14){
-        label = label.substring(0, 11);
+    if(label.length > 20){
+        label = label.substring(0, 19);
         label += "...";
     }
 

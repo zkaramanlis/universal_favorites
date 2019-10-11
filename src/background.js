@@ -1,5 +1,5 @@
 /*global chrome browser*/
-import {getLastChanged, getFile, updateFile} from "./Network";
+import {getLastChanged, getFile, updateFile, backgroundPageRefreshToken } from "./Network";
 import axios from "axios";
 import { browserName } from "react-device-detect";
 
@@ -20,7 +20,14 @@ if(browserName === "Firefox" || browserName === "Edge") {
                         }
                     });
             }
-        }).catch(err => console.error(err));
+        }).catch(() => {
+            browser.storage.local.get(["refreshToken"])
+                .then((result) => {
+                    if(result.refreshToken){
+                        backgroundPageRefreshToken(result.refreshToken);
+                    }
+                }).catch(err => console.error(err));
+        });
     });
 
     browser.runtime.onConnect.addListener(port => {
@@ -54,7 +61,14 @@ if(browserName === "Firefox" || browserName === "Edge") {
                                     chrome.storage.local.set({links:file, date:date});
                                 });
                         }
-                    }).catch(err => console.error(err));;
+                    }).catch(() => {
+                        browser.storage.local.get(["refreshToken"])
+                            .then((result) => {
+                                if(result.refreshToken){
+                                    backgroundPageRefreshToken(result.refreshToken);
+                                }
+                            }).catch(err => console.error(err));
+                    });
             }
         });
     });
@@ -69,7 +83,7 @@ if(browserName === "Firefox" || browserName === "Edge") {
                     updateFile(result.fileId, result.links)
                         .then(res => {
                             chrome.storage.local.set({fileId:res.id, date:res.modifiedTime});
-                        }).catch(err => console.error(err));;
+                        }).catch(err => console.error(err));
                 }
             });
         });

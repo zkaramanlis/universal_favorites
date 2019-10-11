@@ -116,6 +116,18 @@ export async function updateFile(id, links) {
         });
 }
 
+export async function backgroundPageRefreshToken(refreshToken) {
+    axios.post("https://oauth2.googleapis.com/token", {
+        refresh_token:refreshToken,
+        client_id:clientId.installed.client_id,
+        client_secret:clientId.installed.client_secret,
+        grant_type:"refresh_token"
+    }).then(res => {
+        axios.defaults.headers.common["Authorization"] = "Bearer " + res.data.accessToken;
+        chrome.storage.local.set({accessToken:res.data.access_token});
+    });
+}
+
 export async function refreshToken() {
     return new Promise((resolve, reject) => {
         if(browserName === "Firefox" || browserName === "Edge") {
