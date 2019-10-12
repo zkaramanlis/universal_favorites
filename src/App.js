@@ -48,7 +48,8 @@ class App extends React.Component {
             draggingId:null,
             hideContextMenu:true,
             contextX:0,
-            contextY:0
+            contextY:0,
+            isFolder:false
         };
     }
 
@@ -123,6 +124,7 @@ class App extends React.Component {
                     style={{left:this.state.contextX, bottom:this.state.contextY}}>
                     <span onClick={this.edit}>Edit</span>
                     <span onClick={this.delete}>Delete</span>
+                    {this.state.isFolder ? <span onClick={this.openAllFolderLinks}>Open All</span> : null}
                     <span onClick={() => {
                         document.removeEventListener("click", this.handleClick);
                         this.setState({hideContextMenu:true});
@@ -130,6 +132,19 @@ class App extends React.Component {
                 </div>
             </DndProvider>
         );
+    }
+
+    openAllFolderLinks = () => {
+        let currentLinksItem = this.state.currentLinks[this.linkId];
+        currentLinksItem.data.forEach(item => {
+            if(item.type === "link") {
+                if(browserName === "Firefox" || browserName === "Edge") {
+                    browser.tabs.create({url:item.link});
+                } else {
+                    chrome.tabs.create({url:item.link});
+                }
+            }
+        });
     }
 
     saveDraggingId = (id) => {
@@ -255,8 +270,12 @@ class App extends React.Component {
 
         document.addEventListener("click", this.handleClick);
 
+        let currentLinksItem = this.state.currentLinks[id];
+
+        let isFolder = currentLinksItem.type === "folder";
+
         this.linkId = id;
-        this.setState({hideContextMenu:false, contextX:x, contextY:y});
+        this.setState({hideContextMenu:false, contextX:x, contextY:y, isFolder:isFolder});
     }
 
     edit = () => {

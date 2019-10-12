@@ -100,12 +100,11 @@ a{
     background-color: white;
     border: 1px solid black;
     box-shadow: 3px 3px 2px grey;
-    text-align: center;
 }
 #ContextMenu span {
     display: block;
     width:100%;
-    padding: 2px;
+    padding: 4px;
     box-sizing: border-box;
     font-size: 1rem;
     cursor: pointer;

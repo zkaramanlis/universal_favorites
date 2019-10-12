@@ -75,7 +75,7 @@ a{
 }
 #ContextMenu{
     position: absolute;
-    width: 40px;
+    width: 50px;
     background-color: white;
     border: 1px solid black;
     box-shadow: 3px 3px 2px grey;
@@ -84,7 +84,7 @@ a{
 #ContextMenu span {
     display: block;
     width:100%;
-    padding: 1px;
+    padding: 2px;
     box-sizing: border-box;
     cursor: pointer;
 }
