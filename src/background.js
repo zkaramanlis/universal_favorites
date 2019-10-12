@@ -1,5 +1,5 @@
 /*global chrome browser*/
-import {getLastChanged, getFile, updateFile, backgroundPageRefreshToken } from "./Network";
+import {getLastChanged, getFile, updateFile, sendRefreshRequest } from "./Network";
 import axios from "axios";
 import { browserName } from "react-device-detect";
 
@@ -15,7 +15,8 @@ async function updateLinks(result) {
                             browser.storage.local.set({links:file, date:date});
                         });
                 }
-            }));
+            })
+    );
 }
 
 if(browserName === "Firefox" || browserName === "Edge") {
@@ -31,8 +32,8 @@ if(browserName === "Firefox" || browserName === "Edge") {
                         browser.storage.local.get(["refreshToken"])
                             .then((result) => {
                                 if(result.refreshToken){
-                                    backgroundPageRefreshToken(result.refreshToken)
-                                        .then(updateLinks(localStorage));
+                                    sendRefreshRequest(result.refreshToken)
+                                        .then(() => updateLinks(localStorage));
                                 }
                             }).catch(err => console.error(err));
                     });
@@ -63,31 +64,14 @@ if(browserName === "Firefox" || browserName === "Edge") {
             if(result.accessToken && result.fileId && result.date) {
                 axios.defaults.headers.common["Authorization"] = "Bearer " + result.accessToken;
 
-                getLastChanged(result.fileId)
-                    .then(date => {
-                        if(date !== result.date) {
-                            getFile(result.fileId)
-                                .then(file => {
-                                    chrome.storage.local.set({links:file, date:date});
-                                });
-                        }
-                    }).catch(() => {
-                        browser.storage.local.get(["refreshToken"])
-                            .then((result) => {
-                                if(result.refreshToken){
-                                    backgroundPageRefreshToken(result.refreshToken)
-                                        .then(
-                                            getLastChanged(result.fileId)
-                                                .then(date => {
-                                                    if(date !== result.date) {
-                                                        getFile(result.fileId)
-                                                            .then(file => {
-                                                                browser.storage.local.set({links:file, date:date});
-                                                            });
-                                                    }
-                                                }));
-                                }
-                            }).catch(err => console.error(err));
+                updateLinks(result)
+                    .catch(() => {
+                        browser.storage.local.get(["refreshToken"], (result) => {
+                            if(result.refreshToken){
+                                sendRefreshRequest(result.refreshToken)
+                                    .then(() => updateLinks(localStorage));
+                            }
+                        }).catch(err => console.error(err));
                     });
             }
         });

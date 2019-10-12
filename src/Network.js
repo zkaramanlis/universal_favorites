@@ -116,16 +116,18 @@ export async function updateFile(id, links) {
         });
 }
 
-export async function backgroundPageRefreshToken(refreshToken) {
-    axios.post("https://oauth2.googleapis.com/token", {
-        refresh_token:refreshToken,
-        client_id:clientId.installed.client_id,
-        client_secret:clientId.installed.client_secret,
-        grant_type:"refresh_token"
-    }).then(res => {
-        axios.defaults.headers.common["Authorization"] = "Bearer " + res.data.accessToken;
-        chrome.storage.local.set({accessToken:res.data.access_token});
-    });
+export async function sendRefreshRequest(refreshToken) {
+    return (
+        axios.post("https://oauth2.googleapis.com/token", {
+            refresh_token:refreshToken,
+            client_id:clientId.installed.client_id,
+            client_secret:clientId.installed.client_secret,
+            grant_type:"refresh_token"
+        }).then(res => {
+            axios.defaults.headers.common["Authorization"] = "Bearer " + res.data.accessToken;
+            chrome.storage.local.set({accessToken:res.data.access_token});
+        })
+    );
 }
 
 export async function refreshToken() {
@@ -134,36 +136,18 @@ export async function refreshToken() {
             browser.storage.local.get(["refreshToken"])
                 .then((result) => {
                     if(result.refreshToken){
-                        axios.post("https://oauth2.googleapis.com/token", {
-                            refresh_token:result.refreshToken,
-                            client_id:clientId.installed.client_id,
-                            client_secret:clientId.installed.client_secret,
-                            grant_type:"refresh_token"
-                        }).then(res => {
-                            axios.defaults.headers.common["Authorization"] = "Bearer " + res.data.accessToken;
-                            chrome.storage.local.set({accessToken:res.data.access_token});
-                            resolve();
-                        }).catch(err => reject(err));
+                        sendRefreshRequest(result.refreshToken);
+                    } else {
+                        reject("no refresh token");
                     }
-
-                    reject("no refresh token");
                 }).catch(err => console.error(err));
         } else {
             chrome.storage.local.get(["refreshToken"], (result) => {
                 if(result.refreshToken){
-                    axios.post("https://oauth2.googleapis.com/token", {
-                        refresh_token:result.refreshToken,
-                        client_id:clientId.installed.client_id,
-                        client_secret:clientId.installed.client_secret,
-                        grant_type:"refresh_token"
-                    }).then(res => {
-                        axios.defaults.headers.common["Authorization"] = "Bearer " + res.data.accessToken;
-                        chrome.storage.local.set({accessToken:res.data.access_token});
-                        resolve();
-                    }).catch(err => reject(err));
+                    sendRefreshRequest(result.refreshToken);
+                } else {
+                    reject("no refresh token");
                 }
-
-                reject("no refresh token");
             });
         }
     });
