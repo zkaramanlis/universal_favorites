@@ -3,30 +3,40 @@ import {getLastChanged, getFile, updateFile, backgroundPageRefreshToken } from "
 import axios from "axios";
 import { browserName } from "react-device-detect";
 
+var localStorage;
+
+async function updateLinks(result) {
+    return (
+        getLastChanged(result.fileId)
+            .then(date => {
+                if(date !== result.date) {
+                    getFile(result.fileId)
+                        .then(file => {
+                            browser.storage.local.set({links:file, date:date});
+                        });
+                }
+            }));
+}
+
 if(browserName === "Firefox" || browserName === "Edge") {
     browser.runtime.onStartup.addListener(() => {
 
         browser.storage.local.get(["accessToken", "fileId", "date"]).then((result) => {
+            localStorage = result;
             if(result.accessToken && result.fileId && result.date) {
                 axios.defaults.headers.common["Authorization"] = "Bearer " + result.accessToken;
 
-                getLastChanged(result.fileId)
-                    .then(date => {
-                        if(date !== result.date) {
-                            getFile(result.fileId)
-                                .then(file => {
-                                    browser.storage.local.set({links:file, date:date});
-                                });
-                        }
+                updateLinks(result)
+                    .catch(() => {
+                        browser.storage.local.get(["refreshToken"])
+                            .then((result) => {
+                                if(result.refreshToken){
+                                    backgroundPageRefreshToken(result.refreshToken)
+                                        .then(updateLinks(localStorage));
+                                }
+                            }).catch(err => console.error(err));
                     });
             }
-        }).catch(() => {
-            browser.storage.local.get(["refreshToken"])
-                .then((result) => {
-                    if(result.refreshToken){
-                        backgroundPageRefreshToken(result.refreshToken);
-                    }
-                }).catch(err => console.error(err));
         });
     });
 
@@ -65,7 +75,17 @@ if(browserName === "Firefox" || browserName === "Edge") {
                         browser.storage.local.get(["refreshToken"])
                             .then((result) => {
                                 if(result.refreshToken){
-                                    backgroundPageRefreshToken(result.refreshToken);
+                                    backgroundPageRefreshToken(result.refreshToken)
+                                        .then(
+                                            getLastChanged(result.fileId)
+                                                .then(date => {
+                                                    if(date !== result.date) {
+                                                        getFile(result.fileId)
+                                                            .then(file => {
+                                                                browser.storage.local.set({links:file, date:date});
+                                                            });
+                                                    }
+                                                }));
                                 }
                             }).catch(err => console.error(err));
                     });
