@@ -6,7 +6,7 @@ function LinkColumn(props) {
     return (
         <div>
             {props.links.map((item, id) => (
-                <div key={id} onContextMenu={(event) => props.showContextMenu(event, id)}>
+                <div key={item.id} onContextMenu={(event) => props.showContextMenu(event, id)}>
                     <Link 
                         item={item} id={id} openFolder={props.openFolder} draggingId={props.draggingId} 
                         dropElement={props.dropElement} saveDraggingId={props.saveDraggingId}

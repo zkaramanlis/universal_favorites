@@ -391,7 +391,7 @@ class App extends React.Component {
         });
 
         let newLinksList = this.state.currentLinks.slice();
-        newLinksList.push({type:"folder", label:name, data:[]});
+        newLinksList.push({type:"folder", label:name, data:[], id:Date.now() + Math.random()});
 
         list.data = newLinksList;
 
@@ -410,7 +410,7 @@ class App extends React.Component {
         });
 
         let newLinksList = this.state.currentLinks.slice();
-        newLinksList.push({type:"link", label:name, link:url});
+        newLinksList.push({type:"link", label:name, link:url, id:Date.now() + Math.random()});
 
         list.data = newLinksList;
 
