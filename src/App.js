@@ -34,8 +34,6 @@ class App extends React.Component {
         };
         this.history = [];
 
-        this.rightClickRef = React.createRef();
-
         this.state = {
             currentLinks:[],
             backDisabled:true,
@@ -45,9 +43,6 @@ class App extends React.Component {
             editMenu:false,
             editLink:"",
             searchString:"",
-            hideContextMenu:true,
-            contextX:0,
-            contextY:0,
             isFolder:false
         };
     }
@@ -114,41 +109,19 @@ class App extends React.Component {
                     <CustomDragLayer />
                     <ButtonRow backDisabled={this.state.backDisabled} goBack={this.goBack} settings={this.openSettings} 
                         addDisabled={this.state.addDisabled} add={this.openAddMenu} moveUp={this.moveUp} />
+
                     <input type="text" className="inputField" placeholder="Search" onChange={this.search} value={this.state.searchString} />
 
                     <LinkColumn openFolder={this.openFolder} links={this.state.currentLinks}
-                        dropElement={this.dropElement} showContextMenu={this.showContextMenu} />
-                </div>
-                <div id="ContextMenu" hidden={this.state.hideContextMenu} ref={this.rightClickRef}
-                    style={{left:this.state.contextX, bottom:this.state.contextY}}>
-                    <span onClick={this.edit}>Edit</span>
-                    <span onClick={this.delete}>Delete</span>
-                    {this.state.isFolder ? <span onClick={this.openAllFolderLinks}>Open All</span> : null}
-                    <span onClick={() => {
-                        document.removeEventListener("click", this.handleClick);
-                        this.setState({hideContextMenu:true});
-                    }}>Close</span>
+                        changeLinks={this.changeLinks} />
                 </div>
             </DndProvider>
         );
     }
 
-    openAllFolderLinks = () => {
-        let currentLinksItem = this.state.currentLinks[this.linkId];
-        currentLinksItem.data.forEach(item => {
-            if(item.type === "link") {
-                if(browserName === "Firefox" || browserName === "Edge") {
-                    browser.tabs.create({url:item.link});
-                } else {
-                    chrome.tabs.create({url:item.link});
-                }
-            }
-        });
-    }
+    changeLinks = (links) => {
 
-    dropElement = (droppingId, draggingId, isFolder) => {
-
-        if(isNaN(draggingId) || draggingId === droppingId || this.state.searchString) {
+        if(this.state.searchString) {
             return;
         }
 
@@ -157,23 +130,14 @@ class App extends React.Component {
             list = list.data[id];
         });
 
-        let destination = list.data[droppingId];
-        let source = list.data[draggingId];
-        list.data.splice(draggingId, 1);
-        
-        if(destination && isFolder) {
-            destination.data.push(source);
-        }
-        else {
-            list.data.splice(droppingId, 0, source);
-        }
+        list.data = links;
            
         if(browserName === "Firefox" || browserName === "Edge") {
             browser.storage.local.set({linksChanged:true, links:this.links});
         } else {
             chrome.storage.local.set({linksChanged:true, links:this.links});
         }
-        this.setState({currentLinks:list.data});
+        this.setState({currentLinks:links});
     }
 
     search = (event) => {
@@ -249,30 +213,6 @@ class App extends React.Component {
         this.setState({currentLinks:parentList.data.slice(), backDisabled:backDisabled});
     }
 
-    handleClick = (event) => {
-        let isOutside = !(event.target.contains === this.rightClickRef);
-        if(isOutside) {
-            document.removeEventListener("click", this.handleClick);
-            this.setState({hideContextMenu:true});
-        }
-    }
-
-    showContextMenu = (event, id) => {
-        event.preventDefault();
-
-        let x = event.clientX;
-        let y = window.innerHeight - event.clientY;
-
-        document.addEventListener("click", this.handleClick);
-
-        let currentLinksItem = this.state.currentLinks[id];
-
-        let isFolder = currentLinksItem.type === "folder";
-
-        this.linkId = id;
-        this.setState({hideContextMenu:false, contextX:x, contextY:y, isFolder:isFolder});
-    }
-
     edit = () => {
 
         let currentLinksItem = this.state.currentLinks[this.linkId];
@@ -296,35 +236,33 @@ class App extends React.Component {
             backDisabled:backDisabled, searchString:"", addDisabled:false, currentLinks:list.data.slice()});
     }
 
-    delete = () => {
+    delete = (id) => {
 
-        let currentLinksItem = this.state.currentLinks[this.linkId];
+        let index = this.state.currentLinks.findIndex(link => link.id === id);
+        let currentLinksItem = this.state.currentLinks[index];
+        
+        let history = this.history;
         if(currentLinksItem.history) {
-            this.history = currentLinksItem.history;
-            this.linkId = this.history.pop();
+            history = currentLinksItem.history;
         }
 
         let list = this.links;
-        this.history.forEach(id => {
+        history.forEach(id => {
             list = list.data[id];
         });
 
-        list.data.splice(this.linkId, 1);
+        let savedIndex = list.findIndex(link => link.id === id);
+        list.data.splice(savedIndex, 1);
 
-        let backDisabled = this.state.backDisabled;
-        if(this.history.length === 0) {
-            backDisabled = true;
-        }
-
-        document.removeEventListener("click", this.handleClick);
+        list = this.state.currentLinks.slice();
+        list.splice(index, 1);
 
         if(browserName === "Firefox" || browserName === "Edge") {
             browser.storage.local.set({linksChanged:true, links:this.links});
         } else {
             chrome.storage.local.set({linksChanged:true, links:this.links});
         }
-        this.setState({currentLinks:list.data.slice(), searchString:"", hideContextMenu:true,
-            backDisabled:backDisabled, addDisabled:false});
+        this.setState({currentLinks:list});
     }
 
     saveEdit = (link) => {
