@@ -45,7 +45,6 @@ class App extends React.Component {
             editMenu:false,
             editLink:"",
             searchString:"",
-            draggingId:null,
             hideContextMenu:true,
             contextX:0,
             contextY:0,
@@ -117,8 +116,8 @@ class App extends React.Component {
                         addDisabled={this.state.addDisabled} add={this.openAddMenu} moveUp={this.moveUp} />
                     <input type="text" className="inputField" placeholder="Search" onChange={this.search} value={this.state.searchString} />
 
-                    <LinkColumn openFolder={this.openFolder} links={this.state.currentLinks} draggingId={this.state.draggingId}
-                        dropElement={this.dropElement} saveDraggingId={this.saveDraggingId} showContextMenu={this.showContextMenu} />
+                    <LinkColumn openFolder={this.openFolder} links={this.state.currentLinks}
+                        dropElement={this.dropElement} showContextMenu={this.showContextMenu} />
                 </div>
                 <div id="ContextMenu" hidden={this.state.hideContextMenu} ref={this.rightClickRef}
                     style={{left:this.state.contextX, bottom:this.state.contextY}}>
@@ -145,10 +144,6 @@ class App extends React.Component {
                 }
             }
         });
-    }
-
-    saveDraggingId = (id) => {
-        this.setState({draggingId:id});
     }
 
     dropElement = (droppingId, draggingId, isFolder) => {
