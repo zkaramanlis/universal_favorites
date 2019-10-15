@@ -112,11 +112,19 @@ class App extends React.Component {
 
                     <input type="text" className="inputField" placeholder="Search" onChange={this.search} value={this.state.searchString} />
 
-                    <LinkColumn openFolder={this.openFolder} links={this.state.currentLinks}
+                    <LinkColumn openFolder={this.openFolder} links={this.state.currentLinks} tempChangeLinks={this.tempChangeLinks}
                         changeLinks={this.changeLinks} deleteLink={this.deleteLink} showEdit={this.showEdit} />
                 </div>
             </DndProvider>
         );
+    }
+
+    tempChangeLinks = (links) => {
+        if(this.state.searchString) {
+            return;
+        }
+
+        this.setState({currentLinks:links});
     }
 
     getList = (history) => {
@@ -203,9 +211,25 @@ class App extends React.Component {
             list = list.data[id];
         });
 
-        let link = list.data[draggingId];
-        list.data.splice(draggingId, 1);
-        parentList.data.push(link);
+        let currentLinks = this.state.currentLinks.slice();
+        let source = [];
+        if(!currentLinks[draggingId].clicked) {
+            source.push(currentLinks[draggingId]);
+            currentLinks.splice(draggingId, 1);
+        }
+        
+        let filteredData = currentLinks.filter(item => {
+            if(item.clicked) {
+                let itemCopy = Object.assign({}, item);
+                delete itemCopy.clicked;
+                source.push(itemCopy);
+                return false;
+            }
+            return true;
+        });
+        list.data = filteredData;
+
+        parentList.data.push(...source);
 
         this.history.pop();
 

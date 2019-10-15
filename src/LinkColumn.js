@@ -18,7 +18,7 @@ function LinkColumn(props) {
                 <div key={item.id} onContextMenu={(event) => showContextMenu(event, id)}>
                     <Link 
                         item={item} id={id} openFolder={props.openFolder} draggingId={draggingId} 
-                        dropElement={dropElement} saveDraggingId={(id) => setDraggingId(id)}
+                        dropElement={dropElement} saveDraggingId={(id) => setDraggingId(id)} setClicked={setClicked}
                     />
                 </div>)
             )}
@@ -31,23 +31,54 @@ function LinkColumn(props) {
             </div>
         </div>);
 
+    function setClicked(id) {
+        let list = props.links.slice();
+        let newItem = Object.assign({}, list[id]);
+        if(newItem.clicked) {
+            delete newItem.clicked;
+        } else {
+            newItem.clicked = true;
+        }
+        list[id] = newItem;
+
+        props.tempChangeLinks(list);
+    }
+
     function dropElement (droppingId, draggingId, isFolder) {
 
-        if( typeof draggingId !== "number" || draggingId === droppingId) {
+        if(draggingId === droppingId) {
             return;
         }
 
         let list = props.links.slice();
 
-        let destination = list[droppingId];
-        let source = list[draggingId];
-        list.splice(draggingId, 1);
+        let destinationID = list[droppingId].id;
+
+        let source = [];
+        if(!list[draggingId].clicked) {
+            source.push(list[draggingId]);
+            list.splice(draggingId, 1);
+        }
+        list = list.filter(item => {
+            if(item.clicked) {
+                let itemCopy = Object.assign({}, item);
+                delete itemCopy.clicked;
+                source.push(itemCopy);
+                return false;
+            }
+            return true;
+        });
+
+        let destIndex = list.findIndex(item => item.id === destinationID);
     
-        if(destination && isFolder) {
-            destination.data.push(source);
+        if(isFolder) {
+            list[destIndex].data.push(...source);
         }
         else {
-            list.splice(droppingId, 0, source);
+            if(droppingId > draggingId) {
+                destIndex++;
+            }
+            list.splice(destIndex, 0, ...source);
         }
 
         props.changeLinks(list);
@@ -114,7 +145,8 @@ LinkColumn.propTypes = {
     changeLinks:PropTypes.func,
     openFolder:PropTypes.func,
     showEdit:PropTypes.func,
-    deleteLink:PropTypes.func
+    deleteLink:PropTypes.func,
+    tempChangeLinks:PropTypes.func
 };
 
 export default LinkColumn;

@@ -10,13 +10,16 @@ a{
   width: 150px;
 }
 .menu-item {
-  padding: 5px;
-  height: 20px;
+  height: 30px;
   position: relative;
   cursor: pointer;
 }
+.menu-item-content{
+    padding: 5px;
+    width: fit-content;
+}
 .menu-item:hover {
-  background-color: lightgray;
+  background-color: #ededed;
 }
 .icon{
   width: 15px;
@@ -89,5 +92,5 @@ a{
     cursor: pointer;
 }
 #ContextMenu span:hover {
-    background-color: lightgray;
+    background-color: #ededed;
 }

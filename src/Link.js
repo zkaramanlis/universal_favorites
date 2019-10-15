@@ -1,7 +1,9 @@
+/*global chrome browser*/
 import React, { useEffect } from "react";
 import { useDrag, useDrop } from "react-dnd";
 import { getEmptyImage } from "react-dnd-html5-backend";
 import PropTypes from "prop-types";
+import { browserName } from "react-device-detect";
 
 function FolderSubDrop(props) {
     const [, drop] = useDrop({
@@ -12,10 +14,10 @@ function FolderSubDrop(props) {
     });
 
     return(
-        <span ref={drop}>
+        <div ref={drop} className="menu-item-content">
             <img src="https://img.icons8.com/color/48/000000/folder-invoices.png" alt="folder" className="icon" />
             {props.label}
-        </span>
+        </div>
     );
 }
 
@@ -50,13 +52,16 @@ function Link(props) {
         preview(getEmptyImage(), { captureDraggingState: true });
     });
 
-    let style = null;
+    let style = {};
+    if(props.item.clicked) {
+        style.backgroundColor = "lightgray";
+    }
     if(isOver) {
         if(props.id < props.draggingId) {
-            style = {borderTop:"2px dashed gray"};
+            style.borderTop ="2px dashed gray";
         }
         else if(props.id > props.draggingId) {
-            style = {borderBottom:"2px dashed gray"};
+            style.borderBottom = "2px dashed gray";
         }
     }
 
@@ -72,7 +77,8 @@ function Link(props) {
                 ref={node => drag(drop(node))}
                 className="menu-item"
                 style={style}
-                onClick={() => props.openFolder(props.item.data, props.id)}
+                onClick={(event) => clickHandler(event,
+                    () => props.openFolder(props.item.data, props.id))}
             >
                 <FolderSubDrop label={props.item.label} dropElement={props.dropElement} id={props.id} />
                 <img src="https://img.icons8.com/material/24/000000/sort-right--v1.png" alt="arrow" className="icon arrow" />
@@ -89,14 +95,29 @@ function Link(props) {
             ref={node => drag(drop(node))}
             className="menu-item" 
             style={style}
+            onClick={(event) => clickHandler(event, () => {
+                if(browserName === "Firefox" || browserName === "Edge") {
+                    browser.tabs.create({url:url});
+                } else {
+                    chrome.tabs.create({url:url});
+                }
+            })}
         >
-            <a href={url} className="link" target="_blank" rel="noopener noreferrer">
+            <div className="menu-item-content">
                 <img src={"https://www.google.com/s2/favicons?domain=" + props.item.link} alt="link" 
                     className="icon" 
                     onError={getFallbackFavicon} />
                 {label}
-            </a>
+            </div>
         </div>);
+
+    function clickHandler(event, callback) {
+        if(event.ctrlKey) {
+            props.setClicked(props.id);
+        } else {
+            callback();
+        }
+    }
 }
 
 Link.propTypes = {
@@ -105,7 +126,8 @@ Link.propTypes = {
     id:PropTypes.number,
     saveDraggingId:PropTypes.func,
     dropElement:PropTypes.func,
-    draggingId:PropTypes.number
+    draggingId:PropTypes.number,
+    setClicked:PropTypes.func
 };
 
 function getFallbackFavicon(event) {
