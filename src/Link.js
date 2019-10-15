@@ -81,7 +81,7 @@ function Link(props) {
 
     let url = props.item.link;
     if(!url.startsWith("http://") && !url.startsWith("https://")) {
-        url = "//" + url;
+        url = "http://" + url;
     }
 
     return(
