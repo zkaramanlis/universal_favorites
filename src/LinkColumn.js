@@ -24,19 +24,16 @@ function LinkColumn(props) {
             )}
             <div id="ContextMenu" hidden={hideContextMenu} ref={ref.rightClickRef}
                 style={{left:contextX, bottom:contextY}}>
-                <span onClick={this.edit}>Edit</span>
-                <span onClick={this.delete}>Delete</span>
+                <span onClick={showEdit}>Edit</span>
+                <span onClick={deleteLink}>Delete</span>
                 {isFolder ? <span onClick={openAllFolderLinks}>Open All</span> : null}
-                <span onClick={() => {
-                    document.removeEventListener("click", handleClick);
-                    setHideContextMenu(true);
-                }}>Close</span>
+                <span onClick={closeContextMenu}>Close</span>
             </div>
         </div>);
 
     function dropElement (droppingId, draggingId, isFolder) {
 
-        if(draggingId === droppingId) {
+        if( typeof draggingId !== "number" || draggingId === droppingId) {
             return;
         }
 
@@ -83,23 +80,41 @@ function LinkColumn(props) {
                 }
             }
         });
-        document.removeEventListener("click", handleClick);
-        setHideContextMenu(true);
+        closeContextMenu();
     }
 
     function handleClick (event) {
+        event.preventDefault();
         let isOutside = !(event.target.contains === ref.rightClickRef);
         if(isOutside) {
-            document.removeEventListener("click", handleClick);
-            setHideContextMenu(true);
+            closeContextMenu();
         }
+    }
+
+    function showEdit () {
+        closeContextMenu();
+
+        let currentLinksItem = props.links.find(link => link.id === ref.contextId);
+        props.showEdit(currentLinksItem);
+    }
+
+    function deleteLink() {
+        closeContextMenu();
+        props.deleteLink(ref.contextId);
+    }
+
+    function closeContextMenu() {
+        document.removeEventListener("click", handleClick);
+        setHideContextMenu(true);
     }
 }
 
 LinkColumn.propTypes = {
     links:PropTypes.array,
     changeLinks:PropTypes.func,
-    openFolder:PropTypes.func
+    openFolder:PropTypes.func,
+    showEdit:PropTypes.func,
+    deleteLink:PropTypes.func
 };
 
 export default LinkColumn;
