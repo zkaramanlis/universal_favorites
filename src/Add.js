@@ -3,6 +3,7 @@ import React from "react";
 import Toggle from "react-toggle";
 import PropTypes from "prop-types";
 import { browserName } from "react-device-detect";
+import urlParse from "url-parse";
 import "react-toggle/style.css";
 
 class Add extends React.Component {
@@ -20,15 +21,19 @@ class Add extends React.Component {
     componentDidMount = () => {
         if(browserName === "Firefox" || browserName === "Edge") {
             browser.tabs.query({"active": true, "lastFocusedWindow": true}).then((tabs) => {
-                var url = tabs[0].url;
+                let url = tabs[0].url;
+                let hostName = urlParse(url, true).hostname;
+                hostName = hostName.replace("www.", "");
 
-                this.setState({url:url});
+                this.setState({url:url, name:hostName});
             }).catch(err => console.error(err));
         } else {
             chrome.tabs.query({"active": true, "lastFocusedWindow": true}, (tabs) => {
-                var url = tabs[0].url;
+                let url = tabs[0].url;
+                let hostName = urlParse(url, true).hostname;
+                hostName = hostName.replace("www.", "");
 
-                this.setState({url:url});
+                this.setState({url:url, name:hostName});
             });
         }
     }

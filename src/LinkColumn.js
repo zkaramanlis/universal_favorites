@@ -18,7 +18,8 @@ function LinkColumn(props) {
                 <div key={item.id} onContextMenu={(event) => showContextMenu(event, id)}>
                     <Link 
                         item={item} id={id} openFolder={props.openFolder} draggingId={draggingId} 
-                        dropElement={dropElement} saveDraggingId={(id) => setDraggingId(id)} setClicked={setClicked}
+                        dropElement={dropElement} saveDraggingId={(id) => setDraggingId(id)} 
+                        setClicked={setClicked} setShiftClicked={setShiftClicked}
                     />
                 </div>)
             )}
@@ -31,17 +32,48 @@ function LinkColumn(props) {
             </div>
         </div>);
 
+    function setShiftClicked(id) {
+        let list = props.links.slice();
+
+        let firstClicked = list.findIndex(item => item.clicked === true);
+        let start;
+        let end;
+
+        if(firstClicked < 0) {
+            start = id;
+            end = id;
+        }else if(firstClicked < id) {
+            start = firstClicked;
+            end = id;
+        } else {
+            start = id;
+            end = firstClicked;
+        }
+
+        for(let i = start;i <= end;i++) {
+            if(!list[i].clicked) {
+                list[i] = createClickedItem(list[i]);
+            }
+        }
+
+        props.tempChangeLinks(list);
+    }
+
     function setClicked(id) {
         let list = props.links.slice();
-        let newItem = Object.assign({}, list[id]);
+        list[id] = createClickedItem(list[id]);
+
+        props.tempChangeLinks(list);
+    }
+
+    function createClickedItem(item) {
+        let newItem = Object.assign({}, item);
         if(newItem.clicked) {
             delete newItem.clicked;
         } else {
             newItem.clicked = true;
         }
-        list[id] = newItem;
-
-        props.tempChangeLinks(list);
+        return newItem;
     }
 
     function dropElement (droppingId, draggingId, isFolder) {

@@ -114,6 +114,8 @@ function Link(props) {
     function clickHandler(event, callback) {
         if(event.ctrlKey) {
             props.setClicked(props.id);
+        } else if(event.shiftKey) {
+            props.setShiftClicked(props.id);
         } else {
             callback();
         }
@@ -127,7 +129,8 @@ Link.propTypes = {
     saveDraggingId:PropTypes.func,
     dropElement:PropTypes.func,
     draggingId:PropTypes.number,
-    setClicked:PropTypes.func
+    setClicked:PropTypes.func,
+    setShiftClicked:PropTypes.func
 };
 
 function getFallbackFavicon(event) {
