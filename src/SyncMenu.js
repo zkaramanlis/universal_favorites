@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import clientId from "./client_id.json";
 import axios from "axios";
 
-class Settings extends React.Component {
+class SyncMenu extends React.Component {
 
     constructor(props) {
         super(props);
@@ -70,4 +70,4 @@ class Settings extends React.Component {
     }
 }
 
-export default Settings;
+export default SyncMenu;

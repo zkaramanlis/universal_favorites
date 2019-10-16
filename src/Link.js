@@ -66,8 +66,8 @@ function Link(props) {
     }
 
     let label = props.item.label;
-    if(label.length > 20){
-        label = label.substring(0, 19);
+    if(label.length > 16){
+        label = label.substring(0, 15);
         label += "...";
     }
 
@@ -80,7 +80,7 @@ function Link(props) {
                 onClick={(event) => clickHandler(event,
                     () => props.openFolder(props.item.data, props.id))}
             >
-                <FolderSubDrop label={props.item.label} dropElement={props.dropElement} id={props.id} />
+                <FolderSubDrop label={label} dropElement={props.dropElement} id={props.id} />
                 <img src="https://img.icons8.com/material/24/000000/sort-right--v1.png" alt="arrow" className="icon arrow" />
             </div>);
     }

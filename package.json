@@ -15,7 +15,8 @@
         "react-toggle": "^4.1.1",
         "rimraf": "^3.0.0",
         "typescript": "^3.6.3",
-        "url-parse": "^1.4.7"
+        "url-parse": "^1.4.7",
+        "uuid": "^3.3.3"
     },
     "scripts": {
         "start": "react-scripts start",

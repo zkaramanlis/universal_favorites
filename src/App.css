@@ -11,6 +11,7 @@ a{
 }
 .menu-item {
   height: 30px;
+  overflow: hidden;
   position: relative;
   cursor: pointer;
 }
@@ -18,7 +19,13 @@ a{
     padding: 5px;
     width: fit-content;
 }
-.menu-item:hover {
+.settings-menu-item{
+    height: 20px;
+    position: relative;
+    cursor: pointer;
+    padding: 5px;
+}
+.menu-item:hover, .settings-menu-item:hover {
   background-color: #ededed;
 }
 .icon{
@@ -78,7 +85,7 @@ a{
 }
 #ContextMenu{
     position: absolute;
-    width: 50px;
+    width: 60px;
     background-color: white;
     border: 1px solid black;
     box-shadow: 3px 3px 2px grey;
@@ -87,7 +94,8 @@ a{
 #ContextMenu span {
     display: block;
     width:100%;
-    padding: 2px;
+    padding: 3px;
+    height: 20px;
     box-sizing: border-box;
     cursor: pointer;
 }

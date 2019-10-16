@@ -2,7 +2,7 @@
 import React from "react";
 import ButtonRow from "./ButtonRow";
 import LinkColumn from "./LinkColumn";
-import Settings from "./Settings";
+import SettingsMenu from "./SettingsMenu";
 import Add from "./Add";
 import {checkForFile, getFile, uploadFile, getLastChanged} from "./Network";
 import axios from "axios";
@@ -12,6 +12,7 @@ import { DndProvider } from "react-dnd";
 import HTML5Backend from "react-dnd-html5-backend";
 import TouchBackend from "react-dnd-touch-backend";
 import CustomDragLayer from "./CustomDragLayer";
+import uuidv1 from "uuid/v1";
 import "./ButtonRow.css";
 import "./react-contextmenu.css";
 if(isMobile) {
@@ -38,12 +39,12 @@ class App extends React.Component {
             currentLinks:[],
             backDisabled:true,
             addDisabled:false,
+            settingsDisabled:false,
             settingsMenu:false,
             addMenu:false,
             editMenu:false,
             editLink:"",
             searchString:"",
-            isFolder:false
         };
     }
 
@@ -95,7 +96,7 @@ class App extends React.Component {
         }
 
         if(this.state.settingsMenu) {
-            return (<Settings goBack={this.closeSubMenu} sync={this.sync} />);
+            return (<SettingsMenu goBack={this.closeSubMenu} sync={this.sync} addImportedFolder={this.addImportedFolder} />);
         }
         if(this.state.addMenu) {
             return <Add goBack={this.closeSubMenu} addLink={this.addLink} addFolder={this.addFolder} />;
@@ -108,7 +109,7 @@ class App extends React.Component {
                 <div className="menu">
                     <CustomDragLayer />
                     <ButtonRow backDisabled={this.state.backDisabled} goBack={this.goBack} settings={this.openSettings} 
-                        addDisabled={this.state.addDisabled} add={this.openAddMenu} moveUp={this.moveUp} />
+                        addDisabled={this.state.addDisabled} add={this.openAddMenu} moveUp={this.moveUp} settingsDisabled={this.state.settingsDisabled} />
 
                     <input type="text" className="inputField" placeholder="Search" onChange={this.search} value={this.state.searchString} />
 
@@ -117,6 +118,22 @@ class App extends React.Component {
                 </div>
             </DndProvider>
         );
+    }
+
+    addImportedFolder = (folder) => {
+        if(this.state.searchString) {
+            return;
+        }
+
+        let list = this.getList(this.history);
+        list.data.push(folder);
+
+        let currentLinks = this.state.currentLinks.slice();
+        currentLinks.push(folder);
+           
+        this.saveLinksToBrowser();
+        this.closeSubMenu();
+        this.setState({currentLinks:currentLinks});
     }
 
     tempChangeLinks = (links) => {
@@ -162,7 +179,7 @@ class App extends React.Component {
         let searchString = event.target.value.toLowerCase();
 
         if(searchString === "") {
-            this.setState({currentLinks:this.links.data, backDisabled:true, addDisabled:false, searchString:""});
+            this.setState({currentLinks:this.links.data.slice(), backDisabled:true, addDisabled:false, searchString:"", settingsDisabled:false});
             return;
         }
 
@@ -195,7 +212,7 @@ class App extends React.Component {
 
         this.history = [];
 
-        this.setState({currentLinks:results, backDisabled:false, addDisabled:true, searchString:event.target.value});
+        this.setState({currentLinks:results, settingsDisabled:true, backDisabled:false, addDisabled:true, searchString:event.target.value});
     }
 
     moveUp = (draggingId) => {
@@ -325,7 +342,7 @@ class App extends React.Component {
         let list = this.getList(this.history);
 
         let newLinksList = this.state.currentLinks.slice();
-        newLinksList.push({type:"folder", label:name, data:[], id:Date.now() + Math.random()});
+        newLinksList.push({type:"folder", label:name, data:[], id:uuidv1()});
 
         list.data = newLinksList;
 
@@ -337,7 +354,7 @@ class App extends React.Component {
         let list = this.getList(this.history);
 
         let newLinksList = this.state.currentLinks.slice();
-        newLinksList.push({type:"link", label:name, link:url, id:Date.now() + Math.random()});
+        newLinksList.push({type:"link", label:name, link:url, id:uuidv1()});
 
         list.data = newLinksList;
 
@@ -346,21 +363,21 @@ class App extends React.Component {
     }
 
     closeSubMenu = () => {
-        this.saveSettingsToBrowser(false);
+        if(browserName === "Firefox" || browserName === "Edge") {
+            browser.storage.local.set({settingsMenu:false, syncMenu:false});
+        } else {
+            chrome.storage.local.set({settingsMenu:false, syncMenu:false});
+        }
         this.setState({settingsMenu:false, addMenu:false, editMenu:false});
     }
 
     openSettings = () => {
-        this.saveSettingsToBrowser(true);
-        this.setState({settingsMenu:true});
-    }
-
-    saveSettingsToBrowser = (settingState) => {
         if(browserName === "Firefox" || browserName === "Edge") {
-            browser.storage.local.set({settingsMenu:settingState});
+            browser.storage.local.set({settingsMenu:true});
         } else {
-            chrome.storage.local.set({settingsMenu:settingState});
+            chrome.storage.local.set({settingsMenu:true});
         }
+        this.setState({settingsMenu:true});
     }
 
     openAddMenu = () => {
@@ -378,10 +395,10 @@ class App extends React.Component {
         let links = this.getList(this.history);
 
         if(links.type === "home"){
-            this.setState({currentLinks:links.data, backDisabled:true, searchString:"", addDisabled:false});
+            this.setState({currentLinks:links.data.slice(), backDisabled:true, searchString:"", addDisabled:false, settingsDisabled:false});
         }
         else{
-            this.setState({currentLinks:links.data, backDisabled:false, searchString:"", addDisabled:false});
+            this.setState({currentLinks:links.data.slice(), backDisabled:false, searchString:"", addDisabled:false, settingsDisabled:false});
         }
     }
 }

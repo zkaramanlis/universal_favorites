@@ -2,7 +2,7 @@
 import React, {useState, useRef} from "react";
 import PropTypes from "prop-types";
 import Link from "./Link";
-import { browserName } from "react-device-detect";
+import { isMobile, browserName } from "react-device-detect";
 
 function LinkColumn(props) {
     const [draggingId, setDraggingId] = useState(0);
@@ -13,10 +13,10 @@ function LinkColumn(props) {
     const ref = useRef({rightClickRef:React.createRef()});
 
     return (
-        <div>
+        <div style={{position:"relative"}}>
             {props.links.map((item, id) => (
                 <div key={item.id} onContextMenu={(event) => showContextMenu(event, id)}>
-                    <Link 
+                    <Link key={item.id}
                         item={item} id={id} openFolder={props.openFolder} draggingId={draggingId} 
                         dropElement={dropElement} saveDraggingId={(id) => setDraggingId(id)} 
                         setClicked={setClicked} setShiftClicked={setShiftClicked}
@@ -24,7 +24,7 @@ function LinkColumn(props) {
                 </div>)
             )}
             <div id="ContextMenu" hidden={hideContextMenu} ref={ref.rightClickRef}
-                style={{left:contextX, bottom:contextY}}>
+                style={{left:contextX, top:contextY}}>
                 <span onClick={showEdit}>Edit</span>
                 <span onClick={deleteLink}>Delete</span>
                 {isFolder ? <span onClick={openAllFolderLinks}>Open All</span> : null}
@@ -119,12 +119,30 @@ function LinkColumn(props) {
     function showContextMenu (event, id) {
         event.preventDefault();
 
+        let currentLinksItem = props.links[id];
+        
+
+        let yHeight;
+        if(isMobile) {
+            yHeight = id * 50;
+            if(currentLinksItem.type === "folder" && id !== 0) {
+                yHeight -= (160 - 25);
+            } else {
+                yHeight -= (120 - 25);
+            }
+        } else {
+            yHeight = id * 30;
+            if(currentLinksItem.type === "folder" && id !== 0) {
+                yHeight -= (80 - 15);
+            } else {
+                yHeight -= (60 - 15);
+            }
+        }
+
         setContextX(event.clientX);
-        setContextY(window.innerHeight - event.clientY);
+        setContextY(yHeight);
 
         document.addEventListener("click", handleClick);
-
-        let currentLinksItem = props.links[id];
 
         setIsFolder(currentLinksItem.type === "folder");
 

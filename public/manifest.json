@@ -11,7 +11,8 @@
   "permissions": [
     "storage",
     "https://www.googleapis.com/auth/drive.file",
-    "tabs"
+    "tabs",
+    "bookmarks"
   ],
   "icons": {
     "16":"icon-16.png",
