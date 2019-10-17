@@ -88,19 +88,19 @@ function LinkMobile(props) {
     }
 
     return(
-        <div 
-            ref={node => drop(node)}
-            className="menu-item" 
-            style={style}
-        >
-            <a href={url} className="menu-item-content">
+        <a href={url}>
+            <div 
+                ref={node => drop(node)}
+                className="menu-item" 
+                style={style}
+            >
                 <img src={"https://www.google.com/s2/favicons?domain=" + props.item.link} alt="link" 
                     className="icon" 
                     onError={getFallbackFavicon} />
                 {label}
                 <img src="https://img.icons8.com/metro/26/000000/drag-reorder.png" alt="drag section" ref={node => drag(node)} className="icon dragIcon" />
-            </a>
-        </div>);
+            </div>
+        </a>);
 }
 
 LinkMobile.propTypes = {
