@@ -81,7 +81,7 @@ function LinkMobile(props) {
                     () => props.openFolder(props.item.data, props.id))}
             >
                 <FolderSubDrop label={label} dropElement={props.dropElement} id={props.id} />
-                <img src="https://img.icons8.com/metro/26/000000/drag-reorder.png" alt="drag section" ref={node => drag(node)} className="icon arrow" />
+                <img src="https://img.icons8.com/metro/26/000000/drag-reorder.png" alt="drag section" ref={node => drag(node)} className="icon dragIcon" />
             </div>);
     }
 
@@ -108,7 +108,7 @@ function LinkMobile(props) {
                     className="icon" 
                     onError={getFallbackFavicon} />
                 {label}
-                <img src="https://img.icons8.com/metro/26/000000/drag-reorder.png" alt="drag section" ref={node => drag(node)} className="icon arrow" />
+                <img src="https://img.icons8.com/metro/26/000000/drag-reorder.png" alt="drag section" ref={node => drag(node)} className="icon dragIcon" />
             </div>
         </div>);
 

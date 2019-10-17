@@ -24,7 +24,7 @@ function getItemStyles(currentOffset) {
 
     let adjustedX = x;
     if(isMobile) {
-        adjustedX = 0 - (window.innerWidth - x);
+        adjustedX = 0 - (window.innerWidth - x - 30);
     }
 
     const transform = `translate(${adjustedX}px, ${y}px)`;

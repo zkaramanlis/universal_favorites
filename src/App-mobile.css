@@ -47,9 +47,9 @@ a{
   width: 100%;
   display: inline-block;
 }
-.arrow{
+.dragIcon{
   position: absolute;
-  right: 0;
+  right: 10px;
   top:18px;
   margin-top: 0 !important;
 }
