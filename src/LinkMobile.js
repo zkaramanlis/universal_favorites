@@ -97,9 +97,9 @@ function LinkMobile(props) {
             style={style}
             onClick={(event) => clickHandler(event, () => {
                 if(browserName === "Firefox" || browserName === "Edge") {
-                    browser.tabs.create({url:url});
+                    browser.tabs.update({url:url});
                 } else {
-                    chrome.tabs.create({url:url});
+                    chrome.tabs.update({url:url});
                 }
             })}
         >

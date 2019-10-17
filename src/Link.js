@@ -95,11 +95,12 @@ function Link(props) {
             ref={node => drag(drop(node))}
             className="menu-item" 
             style={style}
+            onMouseUp={middleClickHandler}
             onClick={(event) => clickHandler(event, () => {
                 if(browserName === "Firefox" || browserName === "Edge") {
-                    browser.tabs.create({url:url});
+                    browser.tabs.update({url:url});
                 } else {
-                    chrome.tabs.create({url:url});
+                    chrome.tabs.update({url:url});
                 }
             })}
         >
@@ -110,6 +111,17 @@ function Link(props) {
                 {label}
             </div>
         </div>);
+
+    function middleClickHandler(event) {
+        if(event.button === 1){
+            event.preventDefault();
+            if(browserName === "Firefox" || browserName === "Edge") {
+                browser.tabs.create({url:url});
+            } else {
+                chrome.tabs.create({url:url});
+            }
+        }
+    }
 
     function clickHandler(event, callback) {
         if(event.ctrlKey) {
