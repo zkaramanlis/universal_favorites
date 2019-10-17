@@ -16,8 +16,8 @@ This extension provides the same experience you are used to with your browsers b
 
 ## Features
 
-- **Keep your favorites browser independent. Sync between Firefox, Edge, Chrome, and all Chromium varients**
-- **Tested on mobile browsers that accept extensions, like Firefox and Kiwi**
+- **Keep your favorites browser independent. Sync between Firefox, Chrome, and all Chromium variants**
+- **Supported on mobile browsers that accept extensions, like Firefox and Kiwi**
 - **Unlimited Folder Structure, No Paid Only Features**
 - **Keep Your Favorites Under Your Control. No anonymous servers, just a file in your Google Drive. Delete or Edit as you wish**
 - **Free**
@@ -28,7 +28,9 @@ This extension provides the same experience you are used to with your browsers b
 
 Go to the settings menu (gear in the upper right) and click on 'authorize access'. Once you go through Google's authorization process you should get a code. Put that code in the extension and click submit. If the file already exists in your favorites it will then load them. Otherwise it will create a new file from your existing favorites.
 
- Once set up, click on the plus sign to add a favorite, and right click on a link or folder to edit or delete. Files can be rearanged freely with drag and drop. Drag a link into the name/image area of a folder to move it inside, or the blank area to move above/below. Drag a link into the back arrow to move it to the parent folder.
+ Once set up, click on the plus sign to add a favorite, and right click on a link /folder to edit or delete. Files can be rearanged freely with drag and drop. Drag a link into the name/image area of a folder to move it inside, or the blank area to move above/below. Drag a link into the back arrow to move it to the parent folder.
+
+On Mobile devices "right clicking" is done by long pressing on a link/folder, and dragging is done by through the drag icon on the right side.
 
 ## FAQ
 
