@@ -2,6 +2,7 @@
 import React, {useState, useRef} from "react";
 import PropTypes from "prop-types";
 import Link from "./Link";
+import LinkMobile from "./LinkMobile";
 import { isMobile, browserName } from "react-device-detect";
 
 function LinkColumn(props) {
@@ -16,11 +17,19 @@ function LinkColumn(props) {
         <div style={{position:"relative"}}>
             {props.links.map((item, id) => (
                 <div key={item.id} onContextMenu={(event) => showContextMenu(event, id)}>
-                    <Link key={item.id}
-                        item={item} id={id} openFolder={props.openFolder} draggingId={draggingId} 
-                        dropElement={dropElement} saveDraggingId={(id) => setDraggingId(id)} 
-                        setClicked={setClicked} setShiftClicked={setShiftClicked}
-                    />
+                    { isMobile ?
+                        <LinkMobile
+                            item={item} id={id} openFolder={props.openFolder} draggingId={draggingId} 
+                            dropElement={dropElement} saveDraggingId={(id) => setDraggingId(id)} 
+                            setClicked={setClicked} setShiftClicked={setShiftClicked}
+                        />
+                        :
+                        <Link
+                            item={item} id={id} openFolder={props.openFolder} draggingId={draggingId} 
+                            dropElement={dropElement} saveDraggingId={(id) => setDraggingId(id)} 
+                            setClicked={setClicked} setShiftClicked={setShiftClicked}
+                        />
+                    }
                 </div>)
             )}
             <div id="ContextMenu" hidden={hideContextMenu} ref={ref.rightClickRef}
@@ -125,16 +134,16 @@ function LinkColumn(props) {
         let yHeight;
         if(isMobile) {
             yHeight = id * 50;
-            if(currentLinksItem.type === "folder" && id !== 0) {
+            if(currentLinksItem.type === "folder" && id > 1) {
                 yHeight -= (160 - 25);
-            } else {
+            } else if (currentLinksItem.type === "link" && id > 1) {
                 yHeight -= (120 - 25);
             }
         } else {
             yHeight = id * 30;
-            if(currentLinksItem.type === "folder" && id !== 0) {
+            if(currentLinksItem.type === "folder" && id > 1) {
                 yHeight -= (80 - 15);
-            } else {
+            } else if (currentLinksItem.type === "link" && id > 1) {
                 yHeight -= (60 - 15);
             }
         }

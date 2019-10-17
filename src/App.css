@@ -7,7 +7,7 @@ a{
   flex-direction: column;
   width: fit-content;
   background: #ffffff;
-  width: 150px;
+  width: 250px;
 }
 .menu-item {
   height: 30px;
@@ -24,6 +24,7 @@ a{
     position: relative;
     cursor: pointer;
     padding: 5px;
+    text-align: center;
 }
 .menu-item:hover, .settings-menu-item:hover {
   background-color: #ededed;
@@ -37,7 +38,6 @@ a{
   display: inline-block;
 }
 .arrow{
-  margin-left: 20px;
   position: absolute;
   right: 0;
   top:10px;
@@ -70,7 +70,7 @@ a{
 }
 .inputField{
     box-sizing: border-box;
-    width: 150px;
+    width: 250px;
     display: block;
     margin: auto;
     height: 20px;
@@ -79,7 +79,7 @@ a{
     background-color: lightgray;
     opacity: 0.5;
     display: inline-block;
-    width: 150px;
+    width: 250px;
     padding: 5px;
     height: 20px;
 }
@@ -101,4 +101,10 @@ a{
 }
 #ContextMenu span:hover {
     background-color: #ededed;
+}
+.plainButton {
+  width: 99%;
+  height: 25px;
+  margin: auto;
+  display: block;
 }

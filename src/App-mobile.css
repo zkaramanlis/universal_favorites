@@ -14,7 +14,6 @@ a{
   margin-left: 1%;
   margin-right: 1%;
   height: auto;
-  overflow-y: scroll;
 }
 .menu-item {
   height: 50px;
@@ -31,6 +30,7 @@ a{
     height: 30px;
     position: relative;
     cursor: pointer;
+    text-align: center;
     padding: 10px;
 }
 .menu-item:hover, .settings-menu-item:hover {
@@ -48,7 +48,6 @@ a{
   display: inline-block;
 }
 .arrow{
-  margin-left: 20px;
   position: absolute;
   right: 0;
   top:18px;
@@ -85,7 +84,7 @@ a{
     width: 99%;
     display: block;
     margin: auto;
-    height: 20px;
+    height: 40px;
     border: 1px solid gray;
     font-size: 1rem;
 }
@@ -123,4 +122,7 @@ a{
 }
 #ContextMenu span:hover {
     background-color: #ededed;
+}
+.menuButton{
+  height: 45px;
 }

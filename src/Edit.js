@@ -42,7 +42,7 @@ class Edit extends React.Component {
                     null
                     : <React.Fragment>URL: <input type="text" onChange={this.updateUrl} value={this.state.url} /><br /></React.Fragment>}
 
-                <button onClick={this.submit}>Submit</button>
+                <button className="plainButton" onClick={this.submit}>Submit</button>
             </div>
         );
     }

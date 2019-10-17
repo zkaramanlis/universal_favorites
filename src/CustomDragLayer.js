@@ -1,6 +1,7 @@
 import React from "react";
 import { DragLayer } from "react-dnd";
 import PropTypes from "prop-types";
+import { isMobile } from "react-device-detect";
 
 const layerStyles = {
     position: "fixed",
@@ -20,7 +21,14 @@ function getItemStyles(currentOffset) {
     }
   
     const { x, y } = currentOffset;
-    const transform = `translate(${x}px, ${y}px)`;
+
+    let adjustedX = x;
+    if(isMobile) {
+        adjustedX = 0 - (window.innerWidth - x);
+    }
+
+    const transform = `translate(${adjustedX}px, ${y}px)`;
+
     return {
         transform: transform,
         WebkitTransform: transform,

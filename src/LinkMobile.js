@@ -27,7 +27,7 @@ FolderSubDrop.propTypes = {
     id:PropTypes.number
 };
 
-function Link(props) {
+function LinkMobile(props) {
     const [, drag, preview] = useDrag({
         item: { type: "LINK" },
         begin(){
@@ -74,14 +74,14 @@ function Link(props) {
     if(props.item.type === "folder"){
         return (
             <div
-                ref={node => drag(drop(node))}
+                ref={node => drop(node)}
                 className="menu-item"
                 style={style}
                 onClick={(event) => clickHandler(event,
                     () => props.openFolder(props.item.data, props.id))}
             >
                 <FolderSubDrop label={label} dropElement={props.dropElement} id={props.id} />
-                <img src="https://img.icons8.com/material/24/000000/sort-right--v1.png" alt="arrow" className="icon arrow" />
+                <img src="https://img.icons8.com/metro/26/000000/drag-reorder.png" alt="drag section" ref={node => drag(node)} className="icon arrow" />
             </div>);
     }
 
@@ -92,7 +92,7 @@ function Link(props) {
 
     return(
         <div 
-            ref={node => drag(drop(node))}
+            ref={node => drop(node)}
             className="menu-item" 
             style={style}
             onClick={(event) => clickHandler(event, () => {
@@ -108,6 +108,7 @@ function Link(props) {
                     className="icon" 
                     onError={getFallbackFavicon} />
                 {label}
+                <img src="https://img.icons8.com/metro/26/000000/drag-reorder.png" alt="drag section" ref={node => drag(node)} className="icon arrow" />
             </div>
         </div>);
 
@@ -122,7 +123,7 @@ function Link(props) {
     }
 }
 
-Link.propTypes = {
+LinkMobile.propTypes = {
     item:PropTypes.object,
     openFolder:PropTypes.func,
     id:PropTypes.number,
@@ -137,4 +138,4 @@ function getFallbackFavicon(event) {
     event.target.src = "https://img.icons8.com/material/24/000000/internet.png";
 }
 
-export default Link;
+export default LinkMobile;
