@@ -20,8 +20,7 @@ function LinkColumn(props) {
                     { isMobile ?
                         <LinkMobile
                             item={item} id={id} openFolder={props.openFolder} draggingId={draggingId} 
-                            dropElement={dropElement} saveDraggingId={(id) => setDraggingId(id)} 
-                            setClicked={setClicked} setShiftClicked={setShiftClicked}
+                            dropElement={dropElement} saveDraggingId={(id) => setDraggingId(id)}
                         />
                         :
                         <Link

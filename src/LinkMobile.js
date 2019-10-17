@@ -1,9 +1,7 @@
-/*global chrome browser*/
 import React, { useEffect } from "react";
 import { useDrag, useDrop } from "react-dnd";
 import { getEmptyImage } from "react-dnd-html5-backend";
 import PropTypes from "prop-types";
-import { browserName } from "react-device-detect";
 
 function FolderSubDrop(props) {
     const [, drop] = useDrop({
@@ -77,8 +75,7 @@ function LinkMobile(props) {
                 ref={node => drop(node)}
                 className="menu-item"
                 style={style}
-                onClick={(event) => clickHandler(event,
-                    () => props.openFolder(props.item.data, props.id))}
+                onClick={props.openFolder(props.item.data, props.id)}
             >
                 <FolderSubDrop label={label} dropElement={props.dropElement} id={props.id} />
                 <img src="https://img.icons8.com/metro/26/000000/drag-reorder.png" alt="drag section" ref={node => drag(node)} className="icon dragIcon" />
@@ -95,32 +92,15 @@ function LinkMobile(props) {
             ref={node => drop(node)}
             className="menu-item" 
             style={style}
-            onClick={(event) => clickHandler(event, () => {
-                if(browserName === "Firefox" || browserName === "Edge") {
-                    browser.tabs.update({url:url});
-                } else {
-                    chrome.tabs.update({url:url});
-                }
-            })}
         >
-            <div className="menu-item-content">
+            <a href={url} className="menu-item-content">
                 <img src={"https://www.google.com/s2/favicons?domain=" + props.item.link} alt="link" 
                     className="icon" 
                     onError={getFallbackFavicon} />
                 {label}
                 <img src="https://img.icons8.com/metro/26/000000/drag-reorder.png" alt="drag section" ref={node => drag(node)} className="icon dragIcon" />
-            </div>
+            </a>
         </div>);
-
-    function clickHandler(event, callback) {
-        if(event.ctrlKey) {
-            props.setClicked(props.id);
-        } else if(event.shiftKey) {
-            props.setShiftClicked(props.id);
-        } else {
-            callback();
-        }
-    }
 }
 
 LinkMobile.propTypes = {
@@ -130,8 +110,6 @@ LinkMobile.propTypes = {
     saveDraggingId:PropTypes.func,
     dropElement:PropTypes.func,
     draggingId:PropTypes.number,
-    setClicked:PropTypes.func,
-    setShiftClicked:PropTypes.func
 };
 
 function getFallbackFavicon(event) {
