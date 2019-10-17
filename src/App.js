@@ -271,17 +271,16 @@ class App extends React.Component {
         let history = currentLinksItem.history ? currentLinksItem.history : this.history;
 
         let list = this.getList(history);
+        let currentList = this.state.currentLinks.slice();
 
         let savedIndex = list.data.findIndex(link => link.id === id);
 
         list.data.splice(savedIndex, 1);
 
-        list = this.state.currentLinks.slice();
-
-        list.splice(index, 1);
+        currentList.splice(index, 1);
 
         this.saveLinksToBrowser();
-        this.setState({currentLinks:list});
+        this.setState({currentLinks:currentList});
     }
 
     saveEdit = (link) => {
