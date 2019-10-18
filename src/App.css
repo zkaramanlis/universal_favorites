@@ -83,10 +83,11 @@ a{
     color:red;
 }
 .inputField{
+    width: 99%;
     box-sizing: border-box;
-    width: 250px;
     display: block;
     margin: auto;
+    border: 1px solid gray;
     height: 20px;
 }
 .dragBox{

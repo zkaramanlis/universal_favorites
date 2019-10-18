@@ -96,6 +96,7 @@ a{
 .inputField{
     width: 99%;
     display: block;
+    box-sizing: border-box;
     margin: auto;
     height: 40px;
     border: 1px solid gray;
