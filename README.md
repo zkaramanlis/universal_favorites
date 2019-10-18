@@ -24,7 +24,7 @@ This extension provides the same experience you are used to with your browsers b
 - **Searching**
 - **Instantly grabs website favicons**
 
-## How TO
+## How-To
 
 Go to the settings menu (gear in the upper right) and click on 'authorize access'. Once you go through Google's authorization process you should get a code. Put that code in the extension and click submit. If the file already exists in your favorites it will then load them. Otherwise it will create a new file from your existing favorites.
 
