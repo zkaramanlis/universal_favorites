@@ -72,6 +72,19 @@ a{
 #toggle-bar{
   display: flex;
   flex-direction: row;
+  justify-content: center;
+}
+.toggle-bar-disabled-button{
+  width: 33%;
+  height: 30px;
+  background-color: white;
+  border: 1px solid lightgray;
+}
+.toggle-bar-enabled-button{
+  width: 33%;
+  height: 30px;
+  background-color: gray;
+  border: 1px solid gray;
 }
 #warningBlock{
     font-size: .8rem;
@@ -94,6 +107,7 @@ a{
     margin: auto;
     display: block;
     font-size: 1rem;
+    margin-bottom: 2px;
 }
 .dragBox{
     background-color: lightgray;

@@ -61,6 +61,20 @@ a{
 #toggle-bar{
   display: flex;
   flex-direction: row;
+  justify-content: center;
+}
+.toggle-bar-disabled-button{
+  width: 33%;
+  height: 20px;
+  background-color: white;
+  border: 1px solid lightgray;
+}
+.toggle-bar-enabled-button{
+  width: 33%;
+  height: 20px;
+  background-color: gray;
+  border: 1px solid gray;
+  color: #ffffff;
 }
 #warningBlock{
     font-size: 11px;
@@ -107,4 +121,5 @@ a{
   height: 25px;
   margin: auto;
   display: block;
+  margin-bottom: 2px;
 }

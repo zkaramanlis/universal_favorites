@@ -12,9 +12,8 @@
         "react-dnd-touch-backend": "^9.4.0",
         "react-dom": "^16.10.2",
         "react-scripts": "3.1.2",
-        "react-toggle": "^4.1.1",
         "rimraf": "^3.0.0",
-        "typescript": "^3.6.3",
+        "typescript": "^3.6.4",
         "url-parse": "^1.4.7",
         "uuid": "^3.3.3"
     },
