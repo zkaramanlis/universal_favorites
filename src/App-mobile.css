@@ -85,6 +85,7 @@ a{
   height: 30px;
   background-color: gray;
   border: 1px solid gray;
+  color: #ffffff;
 }
 #warningBlock{
     font-size: .8rem;
