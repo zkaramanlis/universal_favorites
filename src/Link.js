@@ -95,7 +95,7 @@ function Link(props) {
             ref={node => drag(drop(node))}
             className="menu-item" 
             style={style}
-            onMouseUp={middleClickHandler}
+            onMouseDown={middleClickHandler}
             onClick={(event) => clickHandler(event, () => {
                 if(browserName === "Firefox" || browserName === "Edge") {
                     browser.tabs.update({url:url});
@@ -116,10 +116,11 @@ function Link(props) {
         if(event.button === 1){
             event.preventDefault();
             if(browserName === "Firefox" || browserName === "Edge") {
-                browser.tabs.create({url:url});
+                browser.tabs.create({url:url, active:false});
             } else {
-                chrome.tabs.create({url:url});
+                chrome.tabs.create({url:url, active:false});
             }
+            return false;
         }
     }
 

@@ -4,7 +4,7 @@ import ButtonRow from "./ButtonRow";
 import LinkColumn from "./LinkColumn";
 import SettingsMenu from "./SettingsMenu";
 import Add from "./Add";
-import {checkForFile, getFile, uploadFile, getLastChanged} from "./Network";
+import {checkForFile, getFile, uploadFile, getLastChanged, updateFile} from "./Network";
 import axios from "axios";
 import Edit from "./Edit";
 import { isMobile, browserName } from "react-device-detect";
@@ -58,6 +58,10 @@ class App extends React.Component {
             chrome.storage.local.get(["settingsMenu", "accessToken", "links", "fileId", "date"], this.mountCallback);
             chrome.runtime.connect();
         }
+        
+        if(isMobile) {
+            window.addEventListener("blur", this.mobileWindowOutOfFocus);
+        }
     }
 
     mountCallback = (result) => {
@@ -86,6 +90,37 @@ class App extends React.Component {
                             });
                     }
                 });
+        }
+    }
+
+    mobileWindowOutOfFocus = () => {
+        if(browserName === "Firefox" || browserName === "Edge") {
+            browser.storage.local.get(["linksChanged", "links", "fileId"])
+                .then((result) => {
+                    if(result.linksChanged && result.links && result.fileId) {
+                        browser.storage.local.set({linksChanged:false});
+                        updateFile(result.fileId, result.links)
+                            .then(res => {
+                                browser.storage.local.set({fileId:res.id, date:res.modifiedTime});
+                            });
+                    }
+                }).catch(err => console.error(err));
+        } else {
+            chrome.storage.local.get(["linksChanged", "links", "fileId"], (result) => {
+                if(result.linksChanged && result.links && result.fileId) {
+                    chrome.storage.local.set({linksChanged:false});
+                    updateFile(result.fileId, result.links)
+                        .then(res => {
+                            chrome.storage.local.set({fileId:res.id, date:res.modifiedTime});
+                        }).catch(err => console.error(err));
+                }
+            });
+        }
+    }
+
+    componentWillUnmount = () => {
+        if(isMobile) {
+            window.removeEventListener("blur", this.mobileWindowOutOfFocus);
         }
     }
   

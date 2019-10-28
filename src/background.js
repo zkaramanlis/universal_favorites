@@ -12,7 +12,11 @@ async function updateLinks(result) {
                 if(date !== result.date) {
                     getFile(result.fileId)
                         .then(file => {
-                            browser.storage.local.set({links:file, date:date});
+                            if(browserName === "Firefox" || browserName === "Edge") {
+                                browser.storage.local.set({links:file, date:date});
+                            } else {
+                                chrome.storage.local.set({links:file, date:date});
+                            }
                         });
                 }
             })
@@ -66,7 +70,7 @@ if(browserName === "Firefox" || browserName === "Edge") {
 
                 updateLinks(result)
                     .catch(() => {
-                        browser.storage.local.get(["refreshToken"], (result) => {
+                        chrome.storage.local.get(["refreshToken"], (result) => {
                             if(result.refreshToken){
                                 sendRefreshRequest(result.refreshToken)
                                     .then(() => updateLinks(localStorage));
