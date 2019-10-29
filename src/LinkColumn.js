@@ -163,9 +163,9 @@ function LinkColumn(props) {
         currentLinksItem.data.forEach(item => {
             if(item.type === "link") {
                 if(browserName === "Firefox" || browserName === "Edge") {
-                    browser.tabs.create({url:item.link});
+                    browser.tabs.create({url:item.link, active:false});
                 } else {
-                    chrome.tabs.create({url:item.link});
+                    chrome.tabs.create({url:item.link, active:false});
                 }
             }
         });

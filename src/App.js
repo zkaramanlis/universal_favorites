@@ -228,24 +228,35 @@ class App extends React.Component {
             let folder = stack.shift();
 
             folder.data.forEach((element, id) => {
-                if(element.type === "link") {
-                    if(element.label.toLowerCase().includes(searchString)) {
-                        let link = Object.assign({}, element);
-                        link.history = folder.history.slice();
+                if(element.label.toLowerCase().includes(searchString)) {
+                    let link = Object.assign({}, element);
+                    link.history = folder.history.slice();
 
-                        results.push(link);
-                    }
-                } else{
-                    let innerFolder = Object.assign({}, element);
-                    innerFolder.history = folder.history.slice();
-                    innerFolder.history.push(id);
-
-                    stack.push(innerFolder);
+                    results.push(link);
+                }
+                if(element.type === "folder") {
+                    let stackFolder = Object.assign({}, element);
+                    stackFolder.history = folder.history.slice();
+                    stackFolder.history.push(id);
+    
+                    stack.push(stackFolder);
                 }
             });
         }
 
         this.history = [];
+
+        results.sort((a, b) => {
+            if(a.type === "folder") {
+                if(b.type === "folder") {
+                    return 0;
+                }
+                return -1;
+            } else if(b.type === "folder") {
+                return 1;
+            }
+            return 0;
+        });
 
         this.setState({currentLinks:results, settingsDisabled:true, backDisabled:false, addDisabled:true, searchString:event.target.value});
     }
@@ -418,9 +429,21 @@ class App extends React.Component {
         this.setState({addMenu:true});
     }
 
-    openFolder =(items, id)=> {
-        this.history.push(id);
-        this.setState({currentLinks:items, backDisabled:false});
+    openFolder =(item, id)=> {
+        let correctItem = item;
+        if(item.history) {
+            this.history = item.history.slice();
+            let links = this.getList(this.history);
+
+            let correctId = links.data.findIndex(savedItem => savedItem.id === item.id);
+
+            this.history.push(correctId);
+            correctItem = links.data[correctId];
+        } else {
+            this.history.push(id);
+        }
+
+        this.setState({currentLinks:correctItem.data.slice(), backDisabled:false, searchString:"", addDisabled:false, settingsDisabled:false});
     }
 
     goBack = () => {

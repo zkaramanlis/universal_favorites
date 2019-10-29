@@ -78,7 +78,7 @@ function Link(props) {
                 className="menu-item"
                 style={style}
                 onClick={(event) => clickHandler(event,
-                    () => props.openFolder(props.item.data, props.id))}
+                    () => props.openFolder(props.item, props.id))}
             >
                 <FolderSubDrop label={label} dropElement={props.dropElement} id={props.id} />
                 <img src="https://img.icons8.com/material/24/000000/sort-right--v1.png" alt="arrow" className="icon arrow" />

@@ -75,7 +75,7 @@ function LinkMobile(props) {
                 ref={node => drop(node)}
                 className="menu-item"
                 style={style}
-                onClick={() => props.openFolder(props.item.data, props.id)}
+                onClick={() => props.openFolder(props.item, props.id)}
             >
                 <FolderSubDrop label={label} dropElement={props.dropElement} id={props.id} />
                 <img src="https://img.icons8.com/metro/26/000000/drag-reorder.png" alt="drag section" ref={node => drag(node)} className="icon dragIcon" />
