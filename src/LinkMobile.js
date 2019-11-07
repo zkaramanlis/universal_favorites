@@ -88,7 +88,7 @@ function LinkMobile(props) {
     }
 
     return(
-        <a href={url}>
+        <a href={url} target="_blank" rel="noopener noreferrer">
             <div 
                 ref={node => drop(node)}
                 className="menu-item" 
