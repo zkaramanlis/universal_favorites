@@ -1,0 +1,195 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`folder snapshot test 1`] = `
+<DndProvider
+  backend={[Function]}
+>
+  <Link
+    draggingId={0}
+    dropElement={[MockFunction]}
+    id={0}
+    item={
+      Object {
+        "label": "example.com",
+        "type": "folder",
+      }
+    }
+    openFolder={[MockFunction]}
+    saveDraggingId={[MockFunction]}
+    setClicked={[MockFunction]}
+    setShiftClicked={[MockFunction]}
+  >
+    <div
+      className="menu-item"
+      onClick={[Function]}
+      style={Object {}}
+    >
+      <FolderSubDrop
+        dropElement={[MockFunction]}
+        id={0}
+        label="example.com"
+      >
+        <div
+          className="menu-item-content"
+        >
+          <img
+            alt="folder"
+            className="icon"
+            src="https://img.icons8.com/color/48/000000/folder-invoices.png"
+          />
+          example.com
+        </div>
+      </FolderSubDrop>
+      <img
+        alt="arrow"
+        className="icon arrow"
+        src="https://img.icons8.com/material/24/000000/sort-right--v1.png"
+      />
+    </div>
+  </Link>
+</DndProvider>
+`;
+
+exports[`folder snapshot test 2`] = `
+<DndProvider
+  backend={[Function]}
+>
+  <Link
+    draggingId={0}
+    dropElement={[MockFunction]}
+    id={0}
+    item={
+      Object {
+        "clicked": true,
+        "label": "example.com",
+        "type": "folder",
+      }
+    }
+    openFolder={[MockFunction]}
+    saveDraggingId={[MockFunction]}
+    setClicked={[MockFunction]}
+    setShiftClicked={[MockFunction]}
+  >
+    <div
+      className="menu-item"
+      onClick={[Function]}
+      style={
+        Object {
+          "backgroundColor": "lightgray",
+        }
+      }
+    >
+      <FolderSubDrop
+        dropElement={[MockFunction]}
+        id={0}
+        label="example.com"
+      >
+        <div
+          className="menu-item-content"
+        >
+          <img
+            alt="folder"
+            className="icon"
+            src="https://img.icons8.com/color/48/000000/folder-invoices.png"
+          />
+          example.com
+        </div>
+      </FolderSubDrop>
+      <img
+        alt="arrow"
+        className="icon arrow"
+        src="https://img.icons8.com/material/24/000000/sort-right--v1.png"
+      />
+    </div>
+  </Link>
+</DndProvider>
+`;
+
+exports[`link snapshot test 1`] = `
+<DndProvider
+  backend={[Function]}
+>
+  <Link
+    draggingId={0}
+    dropElement={[MockFunction]}
+    id={0}
+    item={
+      Object {
+        "label": "example.com",
+        "link": "http://example.com",
+        "type": "link",
+      }
+    }
+    openFolder={[MockFunction]}
+    saveDraggingId={[MockFunction]}
+    setClicked={[MockFunction]}
+    setShiftClicked={[MockFunction]}
+  >
+    <div
+      className="menu-item"
+      onClick={[Function]}
+      onMouseDown={[Function]}
+      style={Object {}}
+    >
+      <div
+        className="menu-item-content"
+      >
+        <img
+          alt="link"
+          className="icon"
+          onError={[Function]}
+          src="https://www.google.com/s2/favicons?domain=http://example.com"
+        />
+        example.com
+      </div>
+    </div>
+  </Link>
+</DndProvider>
+`;
+
+exports[`link snapshot test 2`] = `
+<DndProvider
+  backend={[Function]}
+>
+  <Link
+    draggingId={0}
+    dropElement={[MockFunction]}
+    id={0}
+    item={
+      Object {
+        "clicked": true,
+        "label": "example.com",
+        "link": "http://example.com",
+        "type": "link",
+      }
+    }
+    openFolder={[MockFunction]}
+    saveDraggingId={[MockFunction]}
+    setClicked={[MockFunction]}
+    setShiftClicked={[MockFunction]}
+  >
+    <div
+      className="menu-item"
+      onClick={[Function]}
+      onMouseDown={[Function]}
+      style={
+        Object {
+          "backgroundColor": "lightgray",
+        }
+      }
+    >
+      <div
+        className="menu-item-content"
+      >
+        <img
+          alt="link"
+          className="icon"
+          onError={[Function]}
+          src="https://www.google.com/s2/favicons?domain=http://example.com"
+        />
+        example.com
+      </div>
+    </div>
+  </Link>
+</DndProvider>
+`;

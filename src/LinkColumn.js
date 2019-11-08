@@ -16,7 +16,7 @@ function LinkColumn(props) {
     return (
         <div style={{position:"relative"}}>
             {props.links.map((item, id) => (
-                <div key={item.id} onContextMenu={(event) => showContextMenu(event, id)}>
+                <div key={item.id} className="LinkColumnDiv" onContextMenu={(event) => showContextMenu(event, id)}>
                     { isMobile ?
                         <LinkMobile
                             item={item} id={id} openFolder={props.openFolder} draggingId={draggingId} 
