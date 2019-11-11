@@ -11,7 +11,9 @@ function LinkColumn(props) {
     const [contextX, setContextX] = useState(0);
     const [contextY, setContextY] = useState(0);
     const [isFolder, setIsFolder] = useState(false);
-    const ref = useRef({rightClickRef:React.createRef()});
+    const ref = useRef({contextId:""});
+
+    const rightClickRef = React.createRef();
 
     return (
         <div style={{position:"relative"}}>
@@ -31,7 +33,7 @@ function LinkColumn(props) {
                     }
                 </div>)
             )}
-            <div id="ContextMenu" hidden={hideContextMenu} ref={ref.rightClickRef}
+            <div id="ContextMenu" hidden={hideContextMenu} ref={rightClickRef}
                 style={{left:contextX, top:contextY}}>
                 <span onClick={showEdit}>Edit</span>
                 <span onClick={deleteLink}>Delete</span>
@@ -154,12 +156,12 @@ function LinkColumn(props) {
 
         setIsFolder(currentLinksItem.type === "folder");
 
-        ref.contextId = props.links[id].id;
+        ref.current.contextId = props.links[id].id;
         setHideContextMenu(false);
     }
 
     function openAllFolderLinks () {
-        let currentLinksItem = props.links.find(link => link.id === ref.contextId);
+        let currentLinksItem = props.links.find(link => link.id === ref.current.contextId);
         currentLinksItem.data.forEach(item => {
             if(item.type === "link") {
                 if(browserName === "Firefox" || browserName === "Edge") {
@@ -174,7 +176,7 @@ function LinkColumn(props) {
 
     function handleClick (event) {
         event.preventDefault();
-        let isOutside = !(event.target.contains === ref.rightClickRef);
+        let isOutside = !(event.target.contains === rightClickRef);
         if(isOutside) {
             closeContextMenu();
         }
@@ -183,13 +185,13 @@ function LinkColumn(props) {
     function showEdit () {
         closeContextMenu();
 
-        let currentLinksItem = props.links.find(link => link.id === ref.contextId);
+        let currentLinksItem = props.links.find(link => link.id === ref.current.contextId);
         props.showEdit(currentLinksItem);
     }
 
     function deleteLink() {
         closeContextMenu();
-        props.deleteLink(ref.contextId);
+        props.deleteLink(ref.current.contextId);
     }
 
     function closeContextMenu() {

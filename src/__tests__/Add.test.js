@@ -16,6 +16,10 @@ const props = {
     addLink: jest.fn()
 };
 
+afterEach(() => {
+    jest.clearAllMocks();
+});
+
 test("Add Menu Snapshot Test", () => {
 
     const component = renderer.create(<Add {...props} />);

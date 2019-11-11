@@ -49,6 +49,10 @@ beforeEach(() => {
     );
 });
 
+afterEach(() => {
+    jest.clearAllMocks();
+});
+
 test("link snapshot test", () => {
 
     let tree = toJson(linkComponent);

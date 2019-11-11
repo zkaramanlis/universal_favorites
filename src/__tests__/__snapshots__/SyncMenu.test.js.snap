@@ -1,0 +1,75 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`sync menu snapshot test 1`] = `
+<div
+  className="menu"
+>
+  <button
+    className="menuButton"
+    id="onlyBack"
+    onClick={[Function]}
+  >
+    <img
+      alt="back"
+      className="icon"
+      src="https://img.icons8.com/ios-filled/50/000000/back.png"
+    />
+  </button>
+  <p
+    id="warningBlock"
+  >
+    Click on 'Authorize Access' to sync this extension and google drive using the provided code, which should be entered in the 'code' block before submitting.
+    <br />
+    <br />
+    Syncing to google drive will allow this extension to put a small JSON file named 'FavoritesBar_SyncFile.json' in your google drive to sync between different browsers. Nothing else will be modifed, and the requested access only allows this application to touch that file.
+  </p>
+  <form
+    action="https://accounts.google.com/o/oauth2/v2/auth"
+    method="GET"
+    target="_blank"
+  >
+    <input
+      name="client_id"
+      type="hidden"
+      value="560940426128-giooumtobj8eapjg89o8q5r718c4hb2s.apps.googleusercontent.com"
+    />
+    <input
+      name="redirect_uri"
+      type="hidden"
+      value="urn:ietf:wg:oauth:2.0:oob"
+    />
+    <input
+      name="response_type"
+      type="hidden"
+      value="code"
+    />
+    <input
+      name="scope"
+      type="hidden"
+      value="https://www.googleapis.com/auth/drive.file"
+    />
+    <button
+      className="plainButton"
+      type="submit"
+    >
+      Authorize Access
+    </button>
+  </form>
+  <br />
+  Code: 
+  <input
+    className="inputField"
+    key="code"
+    onChange={[Function]}
+    type="Text"
+    value=""
+  />
+  <br />
+  <button
+    className="plainButton"
+    onClick={[Function]}
+  >
+    Submit
+  </button>
+</div>
+`;

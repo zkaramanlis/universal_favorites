@@ -1,218 +1,242 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`link column snapshot test 1`] = `
-<DndProvider
-  backend={[Function]}
+<div
+  style={
+    Object {
+      "position": "relative",
+    }
+  }
 >
-  <LinkColumn
-    changeLinks={[MockFunction]}
-    deleteLink={[MockFunction]}
-    links={
-      Array [
+  <div
+    className="LinkColumnDiv"
+    key="0"
+    onContextMenu={[Function]}
+  >
+    <Link
+      draggingId={0}
+      dropElement={[Function]}
+      id={0}
+      item={
         Object {
+          "data": Array [
+            Object {
+              "id": 2,
+              "label": "example.com",
+              "link": "http://example.com",
+              "type": "link",
+            },
+            Object {
+              "id": 3,
+              "label": "example2.com",
+              "link": "http://example2.com",
+              "type": "link",
+            },
+          ],
           "id": 0,
           "label": "folder",
           "type": "folder",
-        },
+        }
+      }
+      openFolder={[MockFunction]}
+      saveDraggingId={[Function]}
+      setClicked={[Function]}
+      setShiftClicked={[Function]}
+    />
+  </div>
+  <div
+    className="LinkColumnDiv"
+    key="1"
+    onContextMenu={[Function]}
+  >
+    <Link
+      draggingId={0}
+      dropElement={[Function]}
+      id={1}
+      item={
         Object {
           "id": 1,
           "label": "example.com",
           "link": "http://example.com",
           "type": "link",
-        },
-      ]
-    }
-    openFolder={[MockFunction]}
-    showEdit={[MockFunction]}
-    tempChangeLinks={[MockFunction]}
-  >
-    <div
-      style={
-        Object {
-          "position": "relative",
         }
       }
-    >
-      <div
-        className="LinkColumnDiv"
-        key="0"
-        onContextMenu={[Function]}
-      >
-        <Link
-          draggingId={0}
-          dropElement={[Function]}
-          id={0}
-          item={
-            Object {
-              "id": 0,
-              "label": "folder",
-              "type": "folder",
-            }
-          }
-          openFolder={[MockFunction]}
-          saveDraggingId={[Function]}
-          setClicked={[Function]}
-          setShiftClicked={[Function]}
-        >
-          <div
-            className="menu-item"
-            onClick={[Function]}
-            style={Object {}}
-          >
-            <FolderSubDrop
-              dropElement={[Function]}
-              id={0}
-              label="folder"
-            >
-              <div
-                className="menu-item-content"
-              >
-                <img
-                  alt="folder"
-                  className="icon"
-                  src="https://img.icons8.com/color/48/000000/folder-invoices.png"
-                />
-                folder
-              </div>
-            </FolderSubDrop>
-            <img
-              alt="arrow"
-              className="icon arrow"
-              src="https://img.icons8.com/material/24/000000/sort-right--v1.png"
-            />
-          </div>
-        </Link>
-      </div>
-      <div
-        className="LinkColumnDiv"
-        key="1"
-        onContextMenu={[Function]}
-      >
-        <Link
-          draggingId={0}
-          dropElement={[Function]}
-          id={1}
-          item={
-            Object {
-              "id": 1,
-              "label": "example.com",
-              "link": "http://example.com",
-              "type": "link",
-            }
-          }
-          openFolder={[MockFunction]}
-          saveDraggingId={[Function]}
-          setClicked={[Function]}
-          setShiftClicked={[Function]}
-        >
-          <div
-            className="menu-item"
-            onClick={[Function]}
-            onMouseDown={[Function]}
-            style={Object {}}
-          >
-            <div
-              className="menu-item-content"
-            >
-              <img
-                alt="link"
-                className="icon"
-                onError={[Function]}
-                src="https://www.google.com/s2/favicons?domain=http://example.com"
-              />
-              example.com
-            </div>
-          </div>
-        </Link>
-      </div>
-      <div
-        hidden={true}
-        id="ContextMenu"
-        style={
-          Object {
-            "left": 0,
-            "top": 0,
-          }
+      openFolder={[MockFunction]}
+      saveDraggingId={[Function]}
+      setClicked={[Function]}
+      setShiftClicked={[Function]}
+    />
+  </div>
+  <div
+    className="LinkColumnDiv"
+    key="4"
+    onContextMenu={[Function]}
+  >
+    <Link
+      draggingId={0}
+      dropElement={[Function]}
+      id={2}
+      item={
+        Object {
+          "id": 4,
+          "label": "example.com",
+          "link": "http://example.com",
+          "type": "link",
         }
-      >
-        <span
-          onClick={[Function]}
-        >
-          Edit
-        </span>
-        <span
-          onClick={[Function]}
-        >
-          Delete
-        </span>
-        <span
-          onClick={[Function]}
-        >
-          Close
-        </span>
-      </div>
-    </div>
-  </LinkColumn>
-</DndProvider>
+      }
+      openFolder={[MockFunction]}
+      saveDraggingId={[Function]}
+      setClicked={[Function]}
+      setShiftClicked={[Function]}
+    />
+  </div>
+  <div
+    hidden={true}
+    id="ContextMenu"
+    style={
+      Object {
+        "left": 0,
+        "top": 0,
+      }
+    }
+  >
+    <span
+      onClick={[Function]}
+    >
+      Edit
+    </span>
+    <span
+      onClick={[Function]}
+    >
+      Delete
+    </span>
+    <span
+      onClick={[Function]}
+    >
+      Close
+    </span>
+  </div>
+</div>
 `;
 
 exports[`link column snapshot test 2`] = `
 <div
-  style="position: relative;"
+  style={
+    Object {
+      "position": "relative",
+    }
+  }
 >
   <div
-    data-testid="LinkColumnDiv"
+    className="LinkColumnDiv"
+    key="0"
+    onContextMenu={[Function]}
   >
-    <div
-      class="menu-item"
-    >
-      <div
-        class="menu-item-content"
-      >
-        <img
-          alt="folder"
-          class="icon"
-          src="https://img.icons8.com/color/48/000000/folder-invoices.png"
-        />
-        folder
-      </div>
-      <img
-        alt="arrow"
-        class="icon arrow"
-        src="https://img.icons8.com/material/24/000000/sort-right--v1.png"
-      />
-    </div>
+    <Link
+      draggingId={0}
+      dropElement={[Function]}
+      id={0}
+      item={
+        Object {
+          "data": Array [
+            Object {
+              "id": 2,
+              "label": "example.com",
+              "link": "http://example.com",
+              "type": "link",
+            },
+            Object {
+              "id": 3,
+              "label": "example2.com",
+              "link": "http://example2.com",
+              "type": "link",
+            },
+          ],
+          "id": 0,
+          "label": "folder",
+          "type": "folder",
+        }
+      }
+      openFolder={[MockFunction]}
+      saveDraggingId={[Function]}
+      setClicked={[Function]}
+      setShiftClicked={[Function]}
+    />
   </div>
   <div
-    data-testid="LinkColumnDiv"
+    className="LinkColumnDiv"
+    key="1"
+    onContextMenu={[Function]}
   >
-    <div
-      class="menu-item"
-    >
-      <div
-        class="menu-item-content"
-      >
-        <img
-          alt="link"
-          class="icon"
-          src="https://www.google.com/s2/favicons?domain=http://example.com"
-        />
-        example.com
-      </div>
-    </div>
+    <Link
+      draggingId={0}
+      dropElement={[Function]}
+      id={1}
+      item={
+        Object {
+          "id": 1,
+          "label": "example.com",
+          "link": "http://example.com",
+          "type": "link",
+        }
+      }
+      openFolder={[MockFunction]}
+      saveDraggingId={[Function]}
+      setClicked={[Function]}
+      setShiftClicked={[Function]}
+    />
   </div>
   <div
-    hidden=""
+    className="LinkColumnDiv"
+    key="4"
+    onContextMenu={[Function]}
+  >
+    <Link
+      draggingId={0}
+      dropElement={[Function]}
+      id={2}
+      item={
+        Object {
+          "id": 4,
+          "label": "example.com",
+          "link": "http://example.com",
+          "type": "link",
+        }
+      }
+      openFolder={[MockFunction]}
+      saveDraggingId={[Function]}
+      setClicked={[Function]}
+      setShiftClicked={[Function]}
+    />
+  </div>
+  <div
+    hidden={false}
     id="ContextMenu"
-    style="left: 0px; top: 0px;"
+    style={
+      Object {
+        "left": 20,
+        "top": 0,
+      }
+    }
   >
-    <span>
+    <span
+      onClick={[Function]}
+    >
       Edit
     </span>
-    <span>
+    <span
+      onClick={[Function]}
+    >
       Delete
     </span>
-    <span>
+    <span
+      onClick={[Function]}
+    >
+      Open All
+    </span>
+    <span
+      onClick={[Function]}
+    >
       Close
     </span>
   </div>

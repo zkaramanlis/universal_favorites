@@ -49,6 +49,10 @@ beforeEach(() => {
     );
 });
 
+afterEach(() => {
+    jest.clearAllMocks();
+});
+
 test("link snapshot test", () => {
 
     let tree = toJson(linkComponent);
@@ -102,7 +106,7 @@ test("when link or folder is ctrl clicked setClicked should be called", () => {
     expect(props.setClicked).toHaveBeenCalledWith(props.id);
 });
 
-test("when link or folder is ctrl clicked setShiftClicked should be called", () => {
+test("when link or folder is shift clicked setShiftClicked should be called", () => {
 
     linkComponent.find(".menu-item").prop("onClick")({shiftKey:true});
     folderComponent.find(".menu-item").prop("onClick")({shiftKey:true});

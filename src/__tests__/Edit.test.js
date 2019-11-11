@@ -18,6 +18,10 @@ const folderProps = {
     link: {type:"folder", label:"example.com"}
 };
 
+afterEach(() => {
+    jest.clearAllMocks();
+});
+
 test("edit link shapshot test", () => {
     const component = renderer.create(<Edit {...linkProps} />);
     let tree = component.toJSON();
