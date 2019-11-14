@@ -3,6 +3,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { browserName } from "react-device-detect";
 import urlParse from "url-parse";
+import Back from "./images/back.png";
 
 class Add extends React.Component {
 
@@ -48,7 +49,7 @@ class Add extends React.Component {
         return(
             <div className="menu">
                 <button id="onlyBack" className="menuButton" onClick={this.backToFavs}>
-                    <img src="https://img.icons8.com/ios-filled/50/000000/back.png" alt="back" className="icon" />
+                    <img src={Back} alt="back" className="icon" />
                 </button><br />
 
                 <label id="toggle-bar">

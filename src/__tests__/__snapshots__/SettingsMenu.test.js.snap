@@ -12,20 +12,26 @@ exports[`settings menu snapshot test 1`] = `
     <img
       alt="back"
       className="icon"
-      src="https://img.icons8.com/ios-filled/50/000000/back.png"
+      src="back.png"
     />
   </button>
   <div
     className="settings-menu-item"
     onClick={[Function]}
   >
-    Sync Menu
+    Sync With Drive
   </div>
   <div
     className="settings-menu-item"
     onClick={[Function]}
   >
     Import Bookmarks
+  </div>
+  <div
+    className="settings-menu-item"
+    onClick={[Function]}
+  >
+    About
   </div>
 </div>
 `;

@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import Back from "./images/back.png";
 
 class Edit extends React.Component {
 
@@ -34,7 +35,7 @@ class Edit extends React.Component {
         return(
             <div className="menu">
                 <button id="onlyBack" className="menuButton" onClick={this.backToFavs}>
-                    <img src="https://img.icons8.com/ios-filled/50/000000/back.png" alt="back" className="icon" />
+                    <img src={Back} alt="back" className="icon" />
                 </button><br />
 
 				Name: <input type="text" onChange={this.updateName} value={this.state.name} /><br />

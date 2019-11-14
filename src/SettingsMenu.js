@@ -4,9 +4,12 @@ import PropTypes from "prop-types";
 import { browserName } from "react-device-detect";
 import SyncMenu from "./SyncMenu";
 import uuidv1 from "uuid/v1";
+import AboutMenu from "./AboutMenu";
+import Back from "./images/back.png";
 
 function SettingsMenu(props) {
     const [syncMenu, setSyncMenu] = useState(false);
+    const [aboutMenu, setAboutMenu] = useState(false);
 
     useEffect(() => {
         if(browserName === "Firefox" || browserName === "Edge") {
@@ -29,16 +32,28 @@ function SettingsMenu(props) {
     if(syncMenu) {
         return <SyncMenu goBack={closeSyncMenu} sync={props.sync} />;
     }
+    if (aboutMenu) {
+        return <AboutMenu goBack={closeAboutMenu} />;
+    }
     return(
         <div className="menu">
             <button id="onlyBack" className="menuButton" onClick={props.goBack}>
-                <img src="https://img.icons8.com/ios-filled/50/000000/back.png" alt="back" className="icon" />
+                <img src={Back} alt="back" className="icon" />
             </button>
                 
-            <div className="settings-menu-item" onClick={openSyncMenu}>Sync Menu</div>
+            <div className="settings-menu-item" onClick={openSyncMenu}>Sync With Drive</div>
             <div className="settings-menu-item" onClick={getBookmarks}>Import Bookmarks</div>
+            <div className="settings-menu-item" onClick={openAboutMenu}>About</div>
         </div>
     );
+
+    function openAboutMenu() {
+        setAboutMenu(true);
+    }
+
+    function closeAboutMenu() {
+        setAboutMenu(false);
+    }
 
     function openSyncMenu() {
         saveSettingsToBrowser(true);

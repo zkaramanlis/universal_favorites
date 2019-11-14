@@ -1,7 +1,10 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDrag, useDrop } from "react-dnd";
 import { getEmptyImage } from "react-dnd-html5-backend";
 import PropTypes from "prop-types";
+import folder from "./images/folder.png";
+import defaultImage from "./images/default.png";
+import MobileDrag from "./images/mobile_drag.png";
 
 function FolderSubDrop(props) {
     const [, drop] = useDrop({
@@ -13,7 +16,7 @@ function FolderSubDrop(props) {
 
     return(
         <div ref={drop} className="menu-item-content">
-            <img src="https://img.icons8.com/color/48/000000/folder-invoices.png" alt="folder" className="icon" />
+            <img src={folder} alt="folder" className="icon" />
             {props.label}
         </div>
     );
@@ -50,6 +53,8 @@ function LinkMobile(props) {
         preview(getEmptyImage(), { captureDraggingState: true });
     });
 
+    const [faviconLoaded, setFaviconLoaded] = useState(false);
+
     let style = {};
     if(props.item.clicked) {
         style.backgroundColor = "lightgray";
@@ -78,7 +83,7 @@ function LinkMobile(props) {
                 onClick={() => props.openFolder(props.item, props.id)}
             >
                 <FolderSubDrop label={label} dropElement={props.dropElement} id={props.id} />
-                <img src="https://img.icons8.com/metro/26/000000/drag-reorder.png" alt="drag section" ref={node => drag(node)} className="icon dragIcon" />
+                <img src={MobileDrag} alt="drag section" ref={node => drag(node)} className="icon dragIcon" />
             </div>);
     }
 
@@ -94,11 +99,11 @@ function LinkMobile(props) {
                 className="menu-item" 
                 style={style}
             >
+                <img src={defaultImage} alt="link" className="icon" hidden={faviconLoaded} />
                 <img src={"https://www.google.com/s2/favicons?domain=" + props.item.link} alt="link" 
-                    className="icon" 
-                    onError={getFallbackFavicon} />
+                    className="icon" onLoad={() => setFaviconLoaded(true)} hidden={!faviconLoaded} />
                 {label}
-                <img src="https://img.icons8.com/metro/26/000000/drag-reorder.png" alt="drag section" ref={node => drag(node)} className="icon dragIcon" />
+                <img src={MobileDrag} alt="drag section" ref={node => drag(node)} className="icon dragIcon" />
             </div>
         </a>);
 }
@@ -111,9 +116,5 @@ LinkMobile.propTypes = {
     dropElement:PropTypes.func,
     draggingId:PropTypes.number,
 };
-
-function getFallbackFavicon(event) {
-    event.target.src = "https://img.icons8.com/material/24/000000/internet.png";
-}
 
 export default LinkMobile;

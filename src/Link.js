@@ -1,9 +1,12 @@
 /*global chrome browser*/
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDrag, useDrop } from "react-dnd";
 import { getEmptyImage } from "react-dnd-html5-backend";
 import PropTypes from "prop-types";
 import { browserName } from "react-device-detect";
+import folder from "./images/folder.png";
+import rightArrow from "./images/right_arrow.png";
+import defaultImage from "./images/default.png";
 
 function FolderSubDrop(props) {
     const [, drop] = useDrop({
@@ -15,7 +18,7 @@ function FolderSubDrop(props) {
 
     return(
         <div ref={drop} className="menu-item-content">
-            <img src="https://img.icons8.com/color/48/000000/folder-invoices.png" alt="folder" className="icon" />
+            <img src={folder} alt="folder" className="icon" />
             {props.label}
         </div>
     );
@@ -47,6 +50,8 @@ function Link(props) {
             isOver: monitor.isOver({ shallow: true })
         }),
     });
+
+    const [faviconLoaded, setFaviconLoaded] = useState(false);
 
     useEffect(() => {
         preview(getEmptyImage(), { captureDraggingState: true });
@@ -81,7 +86,7 @@ function Link(props) {
                     () => props.openFolder(props.item, props.id))}
             >
                 <FolderSubDrop label={label} dropElement={props.dropElement} id={props.id} />
-                <img src="https://img.icons8.com/material/24/000000/sort-right--v1.png" alt="arrow" className="icon arrow" />
+                <img src={rightArrow} alt="arrow" className="icon arrow" />
             </div>);
     }
 
@@ -105,9 +110,9 @@ function Link(props) {
             })}
         >
             <div className="menu-item-content">
+                <img src={defaultImage} alt="link" className="icon" hidden={faviconLoaded} />
                 <img src={"https://www.google.com/s2/favicons?domain=" + props.item.link} alt="link" 
-                    className="icon" 
-                    onError={getFallbackFavicon} />
+                    className="icon" onLoad={() => setFaviconLoaded(true)} hidden={!faviconLoaded} />
                 {label}
             </div>
         </div>);
@@ -145,9 +150,5 @@ Link.propTypes = {
     setClicked:PropTypes.func,
     setShiftClicked:PropTypes.func
 };
-
-function getFallbackFavicon(event) {
-    event.target.src = "https://img.icons8.com/material/24/000000/internet.png";
-}
 
 export default Link;

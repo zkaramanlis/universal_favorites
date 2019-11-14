@@ -35,7 +35,7 @@ exports[`folder snapshot test 1`] = `
           <img
             alt="folder"
             className="icon"
-            src="https://img.icons8.com/color/48/000000/folder-invoices.png"
+            src="folder.png"
           />
           example.com
         </div>
@@ -43,7 +43,7 @@ exports[`folder snapshot test 1`] = `
       <img
         alt="arrow"
         className="icon arrow"
-        src="https://img.icons8.com/material/24/000000/sort-right--v1.png"
+        src="right_arrow.png"
       />
     </div>
   </Link>
@@ -90,7 +90,7 @@ exports[`folder snapshot test 2`] = `
           <img
             alt="folder"
             className="icon"
-            src="https://img.icons8.com/color/48/000000/folder-invoices.png"
+            src="folder.png"
           />
           example.com
         </div>
@@ -98,7 +98,7 @@ exports[`folder snapshot test 2`] = `
       <img
         alt="arrow"
         className="icon arrow"
-        src="https://img.icons8.com/material/24/000000/sort-right--v1.png"
+        src="right_arrow.png"
       />
     </div>
   </Link>
@@ -137,7 +137,14 @@ exports[`link snapshot test 1`] = `
         <img
           alt="link"
           className="icon"
-          onError={[Function]}
+          hidden={false}
+          src="default.png"
+        />
+        <img
+          alt="link"
+          className="icon"
+          hidden={true}
+          onLoad={[Function]}
           src="https://www.google.com/s2/favicons?domain=http://example.com"
         />
         example.com
@@ -184,7 +191,14 @@ exports[`link snapshot test 2`] = `
         <img
           alt="link"
           className="icon"
-          onError={[Function]}
+          hidden={false}
+          src="default.png"
+        />
+        <img
+          alt="link"
+          className="icon"
+          hidden={true}
+          onLoad={[Function]}
           src="https://www.google.com/s2/favicons?domain=http://example.com"
         />
         example.com

@@ -2,6 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import clientId from "./client_id.json";
 import axios from "axios";
+import Back from "./images/back.png";
 
 class SyncMenu extends React.Component {
 
@@ -24,10 +25,10 @@ class SyncMenu extends React.Component {
         return(
             <div className="menu">
                 <button id="onlyBack" className="menuButton" onClick={this.backToFavs}>
-                    <img src="https://img.icons8.com/ios-filled/50/000000/back.png" alt="back" className="icon" />
+                    <img src={Back} alt="back" className="icon" />
                 </button>
 
-                <p id="warningBlock">
+                <p className="warningBlock">
                     Click on &apos;Authorize Access&apos; to sync this extension and google drive using the
                     provided code, which should be entered in the &apos;code&apos; block before submitting.
                     <br /><br />
