@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import clientId from "./client_id.json";
 import axios from "axios";
 import Back from "./images/back.png";
+import BackDarkMode from "./images/back_dark_mode.png";
 
 class SyncMenu extends React.Component {
 
@@ -17,7 +18,8 @@ class SyncMenu extends React.Component {
     static get propTypes(){
         return({
             sync:PropTypes.func,
-            goBack:PropTypes.func
+            goBack:PropTypes.func,
+            darkMode:PropTypes.bool
         });
     }
 	
@@ -25,7 +27,8 @@ class SyncMenu extends React.Component {
         return(
             <div className="menu">
                 <button id="onlyBack" className="menuButton" onClick={this.backToFavs}>
-                    <img src={Back} alt="back" className="icon" />
+                    {this.props.darkMode ? <img src={BackDarkMode} alt="back" className="icon" /> 
+                        : <img src={Back} alt="back" className="icon" />}
                 </button>
 
                 <p className="warningBlock">

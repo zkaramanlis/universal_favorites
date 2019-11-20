@@ -9,7 +9,6 @@ a{
 .menu {
   display: flex;
   flex-direction: column;
-  width: fit-content;
   background: #ffffff;
   width: 250px;
 }

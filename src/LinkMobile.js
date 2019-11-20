@@ -4,7 +4,9 @@ import { getEmptyImage } from "react-dnd-html5-backend";
 import PropTypes from "prop-types";
 import folder from "./images/folder.png";
 import defaultImage from "./images/default.png";
+import defaultImageDarkMode from "./images/default_dark_mode.png";
 import MobileDrag from "./images/mobile_drag.png";
+import MobileDragDarkMode from "./images/mobile_drag_dark_mode.png";
 
 function FolderSubDrop(props) {
     const [, drop] = useDrop({
@@ -83,7 +85,8 @@ function LinkMobile(props) {
                 onClick={() => props.openFolder(props.item, props.id)}
             >
                 <FolderSubDrop label={label} dropElement={props.dropElement} id={props.id} />
-                <img src={MobileDrag} alt="drag section" ref={node => drag(node)} className="icon dragIcon" />
+                {props.darkMode ? <img src={MobileDragDarkMode} alt="drag section" ref={node => drag(node)} className="icon dragIcon" /> :
+                    <img src={MobileDrag} alt="drag section" ref={node => drag(node)} className="icon dragIcon" />}
             </div>);
     }
 
@@ -93,17 +96,19 @@ function LinkMobile(props) {
     }
 
     return(
-        <a href={url} target="_blank" rel="noopener noreferrer">
+        <a href={url}>
             <div 
                 ref={node => drop(node)}
                 className="menu-item" 
                 style={style}
             >
-                <img src={defaultImage} alt="link" className="icon" hidden={faviconLoaded} />
+                {props.darkMode ? <img src={defaultImageDarkMode} alt="link" className="icon" hidden={faviconLoaded} /> :
+                    <img src={defaultImage} alt="link" className="icon" hidden={faviconLoaded} />}
                 <img src={"https://www.google.com/s2/favicons?domain=" + props.item.link} alt="link" 
                     className="icon" onLoad={() => setFaviconLoaded(true)} hidden={!faviconLoaded} />
                 {label}
-                <img src={MobileDrag} alt="drag section" ref={node => drag(node)} className="icon dragIcon" />
+                {props.darkMode ? <img src={MobileDragDarkMode} alt="drag section" ref={node => drag(node)} className="icon dragIcon" /> :
+                    <img src={MobileDrag} alt="drag section" ref={node => drag(node)} className="icon dragIcon" />}
             </div>
         </a>);
 }
@@ -115,6 +120,7 @@ LinkMobile.propTypes = {
     saveDraggingId:PropTypes.func,
     dropElement:PropTypes.func,
     draggingId:PropTypes.number,
+    darkMode:PropTypes.bool
 };
 
 export default LinkMobile;

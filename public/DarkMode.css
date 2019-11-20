@@ -1,0 +1,13 @@
+body, .menuButton, #ContextMenu, .menu, .inputField{
+    background-color: black;
+    color: white;
+}
+a{
+    color:white;
+}
+#ContextMenu span:hover, .menu-item:hover, .settings-menu-item:hover, .menuButton:hover {
+    background-color: #5d5d5d;
+}
+.menuButton:disabled:hover {
+    background-color: black;
+}

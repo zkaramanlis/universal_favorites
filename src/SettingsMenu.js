@@ -6,6 +6,7 @@ import SyncMenu from "./SyncMenu";
 import uuidv1 from "uuid/v1";
 import AboutMenu from "./AboutMenu";
 import Back from "./images/back.png";
+import BackDarkMode from "./images/back_dark_mode.png";
 
 function SettingsMenu(props) {
     const [syncMenu, setSyncMenu] = useState(false);
@@ -30,20 +31,22 @@ function SettingsMenu(props) {
     }, []);
 
     if(syncMenu) {
-        return <SyncMenu goBack={closeSyncMenu} sync={props.sync} />;
+        return <SyncMenu goBack={closeSyncMenu} sync={props.sync} darkMode={props.darkMode} />;
     }
     if (aboutMenu) {
-        return <AboutMenu goBack={closeAboutMenu} />;
+        return <AboutMenu goBack={closeAboutMenu} darkMode={props.darkMode} />;
     }
     return(
         <div className="menu">
             <button id="onlyBack" className="menuButton" onClick={props.goBack}>
-                <img src={Back} alt="back" className="icon" />
+                {props.darkMode ? <img src={BackDarkMode} alt="back" className="icon" /> 
+                    : <img src={Back} alt="back" className="icon" />}
             </button>
                 
             <div className="settings-menu-item" onClick={openSyncMenu}>Sync With Drive</div>
             <div className="settings-menu-item" onClick={getBookmarks}>Import Bookmarks</div>
             <div className="settings-menu-item" onClick={openAboutMenu}>About</div>
+            <div className="settings-menu-item" onClick={props.toggleDarkMode}>{props.darkMode ? "Light Mode" : "Dark Mode"}</div>
         </div>
     );
 
@@ -109,7 +112,9 @@ function SettingsMenu(props) {
 SettingsMenu.propTypes = {
     sync:PropTypes.func,
     goBack:PropTypes.func,
-    addImportedFolder:PropTypes.func
+    addImportedFolder:PropTypes.func,
+    darkMode:PropTypes.bool,
+    toggleDarkMode:PropTypes.func
 };
 
 export default SettingsMenu;

@@ -6,7 +6,9 @@ import PropTypes from "prop-types";
 import { browserName } from "react-device-detect";
 import folder from "./images/folder.png";
 import rightArrow from "./images/right_arrow.png";
+import rightArrowDarkMode from "./images/right_arrow_dark_mode.png";
 import defaultImage from "./images/default.png";
+import defaultImageDarkMode from "./images/default_dark_mode.png";
 
 function FolderSubDrop(props) {
     const [, drop] = useDrop({
@@ -86,7 +88,8 @@ function Link(props) {
                     () => props.openFolder(props.item, props.id))}
             >
                 <FolderSubDrop label={label} dropElement={props.dropElement} id={props.id} />
-                <img src={rightArrow} alt="arrow" className="icon arrow" />
+                {props.darkMode ? <img src={rightArrowDarkMode} alt="arrow" className="icon arrow" /> :
+                    <img src={rightArrow} alt="arrow" className="icon arrow" />}
             </div>);
     }
 
@@ -110,7 +113,8 @@ function Link(props) {
             })}
         >
             <div className="menu-item-content">
-                <img src={defaultImage} alt="link" className="icon" hidden={faviconLoaded} />
+                {props.darkMode ? <img src={defaultImageDarkMode} alt="link" className="icon" hidden={faviconLoaded} /> :
+                    <img src={defaultImage} alt="link" className="icon" hidden={faviconLoaded} />}
                 <img src={"https://www.google.com/s2/favicons?domain=" + props.item.link} alt="link" 
                     className="icon" onLoad={() => setFaviconLoaded(true)} hidden={!faviconLoaded} />
                 {label}
@@ -148,7 +152,8 @@ Link.propTypes = {
     dropElement:PropTypes.func,
     draggingId:PropTypes.number,
     setClicked:PropTypes.func,
-    setShiftClicked:PropTypes.func
+    setShiftClicked:PropTypes.func,
+    darkMode:PropTypes.bool
 };
 
 export default Link;

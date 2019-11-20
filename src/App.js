@@ -15,12 +15,7 @@ import CustomDragLayer from "./CustomDragLayer";
 import uuidv1 from "uuid/v1";
 import "./ButtonRow.css";
 import "./react-contextmenu.css";
-if(isMobile) {
-    import("./App-mobile.css").then(() => true);
-}
-else {
-    import("./App.css").then(() => true);
-}
+import "./App.css";
 
 
 class App extends React.Component {
@@ -45,17 +40,18 @@ class App extends React.Component {
             editMenu:false,
             editLink:"",
             searchString:"",
+            darkMode:false
         };
     }
 
     componentDidMount = () => {
         if(browserName === "Firefox" || browserName === "Edge") {
-            browser.storage.local.get(["settingsMenu", "accessToken", "links", "fileId", "date"])
+            browser.storage.local.get(["settingsMenu", "accessToken", "links", "fileId", "date", "darkMode"])
                 .then(this.mountCallback, (err) => console.log(err));
             browser.runtime.connect();
         }
         else {
-            chrome.storage.local.get(["settingsMenu", "accessToken", "links", "fileId", "date"], this.mountCallback);
+            chrome.storage.local.get(["settingsMenu", "accessToken", "links", "fileId", "date", "darkMode"], this.mountCallback);
             chrome.runtime.connect();
         }
         
@@ -70,6 +66,10 @@ class App extends React.Component {
         if(result.links) {
             this.links = result.links;
             this.setState({currentLinks:result.links.data.slice()});
+        }
+
+        if(result.darkMode) {
+            this.setState({darkMode:true});
         }
 
         if(result.accessToken && result.fileId && result.date) {
@@ -130,29 +130,69 @@ class App extends React.Component {
             backend = TouchBackend;
         }
 
+        let darkModeCss = "";
+        if(this.state.darkMode) {
+            darkModeCss = "/DarkMode.css";
+        }
+
+        let appMobileCss = "";
+        if(isMobile) {
+            appMobileCss = "/App-mobile.css";
+        }
+
         if(this.state.settingsMenu) {
-            return (<SettingsMenu goBack={this.closeSubMenu} sync={this.sync} addImportedFolder={this.addImportedFolder} />);
+            return (
+                <div>
+                    <link rel="stylesheet" type="text/css" href={darkModeCss} />
+                    <link rel="stylesheet" type="text/css" href={appMobileCss} />
+                    <SettingsMenu goBack={this.closeSubMenu} sync={this.sync} addImportedFolder={this.addImportedFolder} 
+                        darkMode={this.state.darkMode} toggleDarkMode={this.toggleDarkMode} />
+                </div>
+            );
         }
         if(this.state.addMenu) {
-            return <Add goBack={this.closeSubMenu} addLink={this.addLink} addFolder={this.addFolder} />;
+            return (
+                <div>
+                    <link rel="stylesheet" type="text/css" href={darkModeCss} />
+                    <link rel="stylesheet" type="text/css" href={appMobileCss} />
+                    <Add goBack={this.closeSubMenu} addLink={this.addLink} addFolder={this.addFolder} darkMode={this.state.darkMode} />
+                </div>
+            );
         }
         if(this.state.editMenu) {
-            return <Edit goBack={this.closeSubMenu} link={this.state.editLink} save={this.saveEdit} />;
+            return (
+                <div>
+                    <link rel="stylesheet" type="text/css" href={darkModeCss} />
+                    <link rel="stylesheet" type="text/css" href={appMobileCss} />
+                    <Edit goBack={this.closeSubMenu} link={this.state.editLink} save={this.saveEdit} darkMode={this.state.darkMode} />
+                </div>
+            );
         }
         return (
             <DndProvider backend={backend}>
                 <div className="menu">
+                    <link rel="stylesheet" type="text/css" href={darkModeCss} />
+                    <link rel="stylesheet" type="text/css" href={appMobileCss} />
                     <CustomDragLayer />
-                    <ButtonRow backDisabled={this.state.backDisabled} goBack={this.goBack} settings={this.openSettings} 
+                    <ButtonRow backDisabled={this.state.backDisabled} goBack={this.goBack} settings={this.openSettings} darkMode={this.state.darkMode}
                         addDisabled={this.state.addDisabled} add={this.openAddMenu} moveUp={this.moveUp} settingsDisabled={this.state.settingsDisabled} />
 
                     <input type="text" className="inputField" placeholder="Search" onChange={this.search} value={this.state.searchString} />
 
                     <LinkColumn openFolder={this.openFolder} links={this.state.currentLinks} tempChangeLinks={this.tempChangeLinks}
-                        changeLinks={this.changeLinks} deleteLink={this.deleteLink} showEdit={this.showEdit} />
+                        changeLinks={this.changeLinks} deleteLink={this.deleteLink} showEdit={this.showEdit} darkMode={this.state.darkMode} />
                 </div>
             </DndProvider>
         );
+    }
+
+    toggleDarkMode = () => {
+        if(browserName === "Firefox" || browserName === "Edge") {
+            browser.storage.local.set({darkMode:!this.state.darkMode});
+        } else {
+            chrome.storage.local.set({darkMode:!this.state.darkMode});
+        }
+        this.setState({darkMode:!this.state.darkMode});
     }
 
     addImportedFolder = (folder) => {
@@ -377,9 +417,9 @@ class App extends React.Component {
 
     saveSyncToBrowser = (id, date) => {
         if(browserName === "Firefox" || browserName === "Edge") {
-            browser.storage.local.set({fileId:id, links:this.links, date:date, settingsMenu:false});
+            browser.storage.local.set({fileId:id, links:this.links, date:date, settingsMenu:false, syncMenu:false});
         } else {
-            chrome.storage.local.set({fileId:id, links:this.links, date:date, settingsMenu:false});
+            chrome.storage.local.set({fileId:id, links:this.links, date:date, settingsMenu:false, syncMenu:false});
         }
     }
 

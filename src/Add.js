@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import { browserName } from "react-device-detect";
 import urlParse from "url-parse";
 import Back from "./images/back.png";
+import BackDarkMode from "./images/back_dark_mode.png";
 
 class Add extends React.Component {
 
@@ -41,7 +42,8 @@ class Add extends React.Component {
         return({
             goBack:PropTypes.func,
             addFolder:PropTypes.func,
-            addLink:PropTypes.func
+            addLink:PropTypes.func,
+            darkMode:PropTypes.bool
         });
     }
 
@@ -49,7 +51,8 @@ class Add extends React.Component {
         return(
             <div className="menu">
                 <button id="onlyBack" className="menuButton" onClick={this.backToFavs}>
-                    <img src={Back} alt="back" className="icon" />
+                    {this.props.darkMode ? <img src={BackDarkMode} alt="back" className="icon" /> 
+                        : <img src={Back} alt="back" className="icon" />}
                 </button><br />
 
                 <label id="toggle-bar">

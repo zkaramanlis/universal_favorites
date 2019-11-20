@@ -1,12 +1,14 @@
 import React from "react";
 import PropTypes from "prop-types";
 import Back from "./images/back.png";
+import BackDarkMode from "./images/back_dark_mode.png";
 
 function AboutMenu(props) {
     return(
         <div className="menu">
             <button id="onlyBack" className="menuButton" onClick={props.goBack}>
-                <img src={Back} alt="back" className="icon" />
+                {props.darkMode ? <img src={BackDarkMode} alt="back" className="icon" /> 
+                    : <img src={Back} alt="back" className="icon" />}
             </button>
 
             <p className="warningBlock">
@@ -24,7 +26,8 @@ function AboutMenu(props) {
 }
 
 AboutMenu.propTypes = {
-    goBack:PropTypes.func
+    goBack:PropTypes.func,
+    darkMode:PropTypes.bool
 };
 
 export default AboutMenu;

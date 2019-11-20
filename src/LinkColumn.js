@@ -22,13 +22,13 @@ function LinkColumn(props) {
                     { isMobile ?
                         <LinkMobile
                             item={item} id={id} openFolder={props.openFolder} draggingId={draggingId} 
-                            dropElement={dropElement} saveDraggingId={(id) => setDraggingId(id)}
+                            dropElement={dropElement} saveDraggingId={(id) => setDraggingId(id)} darkMode={props.darkMode}
                         />
                         :
                         <Link
                             item={item} id={id} openFolder={props.openFolder} draggingId={draggingId} 
                             dropElement={dropElement} saveDraggingId={(id) => setDraggingId(id)} 
-                            setClicked={setClicked} setShiftClicked={setShiftClicked}
+                            setClicked={setClicked} setShiftClicked={setShiftClicked} darkMode={props.darkMode}
                         />
                     }
                 </div>)
@@ -206,7 +206,8 @@ LinkColumn.propTypes = {
     openFolder:PropTypes.func,
     showEdit:PropTypes.func,
     deleteLink:PropTypes.func,
-    tempChangeLinks:PropTypes.func
+    tempChangeLinks:PropTypes.func,
+    darkMode:PropTypes.bool
 };
 
 export default LinkColumn;

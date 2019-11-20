@@ -1,0 +1,76 @@
+body { 
+    font-size:62.5%;
+}
+.menu {
+  width: 98%;
+  font-size: 1rem;
+  margin-left: 1%;
+  margin-right: 1%;
+  height: auto;
+}
+.menu-item {
+  height: 50px;
+  font-size: 1.2rem;
+}
+.settings-menu-item{
+    height: 30px;
+    padding: 10px;
+}
+.icon{
+  width: 20px;
+  height: 20px;
+}
+.link .icon, .menu-item .icon {
+    margin-top:10px;
+}
+.dragIcon{
+  position: absolute;
+  right: 10px;
+  top:18px;
+  margin-top: 0 !important;
+}
+.warningBlock{
+    font-size: .8rem;
+    margin: 0 5px 10px 5px;
+}
+.inputField{
+    width: 99%;
+    display: block;
+    height: 40px;
+    font-size: 1rem;
+}
+.plainButton {
+    height: 30px;
+    margin: auto;
+    font-size: 1rem;
+}
+.dragBox{
+    background-color: lightgray;
+    opacity: 0.5;
+    width: 150px;
+    padding: 5px;
+    height: 40px;
+    font-size: 1.2rem;
+    width: 100%;
+}
+#ContextMenu{
+    width: 90px;
+}
+#ContextMenu span {
+    display: block;
+    width:100%;
+    padding: 8px;
+    height: 40px;
+    box-sizing: border-box;
+    font-size: 1rem;
+    cursor: pointer;
+}
+.menuButton{
+  height: 45px;
+}
+#toggle-bar, .plainButton{
+    margin-top: 10px;
+}
+.toggle-bar-disabled-button, .toggle-bar-enabled-button {
+    height: 30px;
+}
