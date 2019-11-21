@@ -1,3 +1,4 @@
+/*global chrome browser*/
 import React, { useEffect, useState } from "react";
 import { useDrag, useDrop } from "react-dnd";
 import { getEmptyImage } from "react-dnd-html5-backend";
@@ -7,6 +8,7 @@ import defaultImage from "./images/default.png";
 import defaultImageDarkMode from "./images/default_dark_mode.png";
 import MobileDrag from "./images/mobile_drag.png";
 import MobileDragDarkMode from "./images/mobile_drag_dark_mode.png";
+import { browserName } from "react-device-detect";
 
 function FolderSubDrop(props) {
     const [, drop] = useDrop({
@@ -96,11 +98,11 @@ function LinkMobile(props) {
     }
 
     return(
-        <a href={url}>
             <div 
                 ref={node => drop(node)}
                 className="menu-item" 
                 style={style}
+                onClick={() => openUrl(url)}
             >
                 {props.darkMode ? <img src={defaultImageDarkMode} alt="link" className="icon" hidden={faviconLoaded} /> :
                     <img src={defaultImage} alt="link" className="icon" hidden={faviconLoaded} />}
@@ -109,8 +111,15 @@ function LinkMobile(props) {
                 {label}
                 {props.darkMode ? <img src={MobileDragDarkMode} alt="drag section" ref={node => drag(node)} className="icon dragIcon" /> :
                     <img src={MobileDrag} alt="drag section" ref={node => drag(node)} className="icon dragIcon" />}
-            </div>
-        </a>);
+            </div>);
+}
+
+function openUrl(url) {
+    if(browserName === "Firefox" || browserName === "Edge") {
+        browser.tabs.update({url:url, active:true});
+    } else {
+        chrome.tabs.update({url:url, active:true});
+    }
 }
 
 LinkMobile.propTypes = {
